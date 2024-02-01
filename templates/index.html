@@ -77,7 +77,7 @@
 
   <script>
     {{ map.header.render|safe }}
-    {{MyField1.header.render|safe}}
+    {{MyField.header.render|safe}}
     {{MyField2.header.render|safe}}
     {{MyField3.header.render|safe}}
 
@@ -307,7 +307,7 @@
     <section class="section dashboard">
     <div class="maparea">
         {{map.html.render|safe}}
-        {{MyField1.html.render|safe}}
+        {{MyField.html.render|safe}}
         {{MyField2.html.render|safe}}
         {{MyField3.html.render|safe}}
               
@@ -340,12 +340,12 @@
   <div class="compenents">
   
   <!--Field | Area start-->
-  <label style="color: white" for="Selectregion_dropdown">Field | Area</label><br>
+  <label style="color: white" for="Selectregion_dropdown">ROI | Field</label><br>
   <select class="drop_select" onchange="location = this.value;">
         <option value="" selected disabled> Select Region/Field</option>
-        <option value="{% url 'MyField' %}">Ewaso Nyiro</option>
-        <option value="{% url 'MyField2' %}">Siaya</option>
-        <option value="{% url 'MyField3' %}">Homa Bay</option>
+        <option value="{% url 'MyField' %}">Kipkelion west constituency</option>
+        <option value="{% url 'MyField2' %}">Nyeri</option>
+        <option value="{% url 'MyField3' %}">MyField1</option>
       </select>
       <br>
       <br>
@@ -354,7 +354,7 @@
   
   <!--Load to Map start-->
     <a href="#">
-      <button style="color:black; width: 200px;">Load to Map</button>
+      <button style="color:black; width: 200px;">Add Map</button>
     </a>
     <!-- JavaScript to trigger form submission on dropdown change -->
     <script>
@@ -445,7 +445,7 @@
 
   <script>
     {{ map.script.render|safe }}
-    {{MyField1.script.render|safe}}
+    {{MyField.script.render|safe}}
     {{MyField2.script.render|safe}}
     {{MyField3.script.render|safe}}
 

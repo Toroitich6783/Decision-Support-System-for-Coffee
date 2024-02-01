@@ -20,7 +20,7 @@ from DSSCoffeeAPP import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',views.map.as_view(), name='map'),
-    path('MyField2',views.MyField2.as_view(),name="MyField2"),
+    path('MyField',views.MyField.as_view(),name="MyField"),
     path('MyField2',views.MyField2.as_view(),name="MyField2"),
     path('MyField3',views.MyField3.as_view(),name="MyField3"),
 ]
