@@ -77,6 +77,9 @@
 
   <script>
     {{ map.header.render|safe }}
+    {{MyField1.header.render|safe}}
+    {{MyField2.header.render|safe}}
+    {{MyField3.header.render|safe}}
 
     
    </script> 
@@ -304,6 +307,11 @@
     <section class="section dashboard">
     <div class="maparea">
         {{map.html.render|safe}}
+        {{MyField1.html.render|safe}}
+        {{MyField2.html.render|safe}}
+        {{MyField3.html.render|safe}}
+              
+              
 
         
       </div>
@@ -332,31 +340,15 @@
   <div class="compenents">
   
   <!--Field | Area start-->
-    <label style="color: white" for="Selectregion_dropdown">Field | Area</label><br>
-    <form id="queryForm" method="post" action="{% url 'map' %}">
-      {% csrf_token %}
-      <select class="drop_select" name="name" id="nameDropdown">
-          <option value="" selected disabled>Select Region/Field</option>
-          {% for item in data %}
-              <option value="{{ item.name }}">{{ item.name }}</option>
-          {% endfor %}
+  <label style="color: white" for="Selectregion_dropdown">Field | Area</label><br>
+  <select class="drop_select" onchange="location = this.value;">
+        <option value="" selected disabled> Select Region/Field</option>
+        <option value="{% url 'MyField' %}">Ewaso Nyiro</option>
+        <option value="{% url 'MyField2' %}">Siaya</option>
+        <option value="{% url 'MyField3' %}">Homa Bay</option>
       </select>
-    </form>
-    <script>
-      // Check if there is a selected option in the local storage
-      var selectedOption = localStorage.getItem('selectedOption');
-      // Set the selected option in the dropdown if it exists in local storage
-      if (selectedOption) {
-          document.getElementById('nameDropdown').value = selectedOption;
-      }
-      // Add an event listener to the dropdown to update the local storage on change
-      document.getElementById('nameDropdown').addEventListener('change', function () {
-          var selectedValue = this.value;
-  
-          // Update the local storage with the selected option
-          localStorage.setItem('selectedOption', selectedValue);
-      });
-    </script>
+      <br>
+      <br>
   <!--Field | Area End-->
   
   
@@ -453,6 +445,9 @@
 
   <script>
     {{ map.script.render|safe }}
+    {{MyField1.script.render|safe}}
+    {{MyField2.script.render|safe}}
+    {{MyField3.script.render|safe}}
 
   
       </script>
