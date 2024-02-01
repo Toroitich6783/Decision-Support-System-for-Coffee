@@ -5,4 +5,6 @@ class DateInput(forms.DateInput):
 
 class DateForm(forms.Form):
     start_date = forms.DateField(widget=DateInput)
-    end_date = forms.DateField(widget=DateInput)      
+    end_date = forms.DateField(widget=DateInput)   
+    
+   
