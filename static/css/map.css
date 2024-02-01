@@ -1,0 +1,26 @@
+
+@media (max-width: 700px) {
+  /* put your css styles in here */
+  .maparea{
+    background-color: none;
+    height: 720px;
+    width: 100%;
+    float: right;
+    }
+    .compenents{
+      /* background-color: black; */
+      height: 740px;
+      font-size:13px;
+      margin-left:0px;
+      position: absolute;
+      margin-top: 750px;
+      }
+  .nav-link{
+    display: none;
+
+  }
+  Variables{
+  width: 99%;
+  color: red;
+  }
+}

@@ -1,0 +1,138 @@
+body {
+    font-family: "Open Sans", sans-serif;
+    background:red;
+    color: #444444;
+  }
+.message {
+    position: absolute;
+    z-index: 9999;
+    margin-left: 390px;
+    margin-top: 15px;
+}
+.success-message {
+    color: blue;
+}
+.error-message {
+    color: red;
+}
+
+.titlesection{
+    font-weight: bold;
+    color: white;
+
+    
+        }
+
+.maparea{
+    background-color: none;
+    height: 740px;
+    width: 79%;
+    float: right;
+    }
+
+.compenents{
+    /* background-color: black; */
+    height: 740px;
+    width: 21%;
+    float: left;
+    font-size:13px
+    }
+
+.drop_select{
+        width: 250px;
+        background-color: black;
+        color: white;
+
+    }
+
+.mapsection{
+    margin-left:350px;
+    color: white;
+
+ }
+ 
+.Analysissection{
+    margin-left:570px;
+    color: white;
+
+ }
+ .Analysissection1{
+    margin-left:450px;
+    color: white;
+
+ }
+
+
+ /* dropdown start */
+ 
+   /* Basic styling for the navigation bar */
+   .my-navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+  }
+
+  /* Style for navigation items */
+  .my-nav-item {
+    display: inline-block;
+    color: white;
+  }
+
+  /* Style for navigation links */
+  .my-nav-link {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+
+  /* Style the dropdown */
+  .my-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Style the dropdown menu */
+  .my-dropdown-menu {
+    display: none; /* Hide the dropdown menu by default */
+    position: absolute;
+    min-width: 260px;
+    background-color: black;
+    z-index: 1;
+  }
+
+  /* Style the dropdown menu items */
+  .my-dropdown-menu a {
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    color: white;
+  }
+
+  /* Change color on hover for dropdown items */
+  .my-dropdown-menu a:hover {
+    background-color:#ADD8E6;
+  }
+
+  /* Show the dropdown menu on hover */
+  .my-dropdown:hover .my-dropdown-menu {
+    display: block;
+  }
+
+  /* Media query for smaller screens */
+  @media (max-width: 768px) {
+    .my-dropdown {
+      position: relative;
+      display: block;
+    }
+    .my-dropdown {
+      display: none; /* Hide the dropdown menu on smaller screens */
+    }
+
+    #tele {
+        display: block; /* Hide the dropdown menu on smaller screens */
+        font-size: smaller;
+      }
+  }

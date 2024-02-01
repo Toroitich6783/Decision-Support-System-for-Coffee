@@ -1,0 +1,39 @@
+.titlesection{
+    font-weight: bold;
+    color: white
+        }
+
+.maparea{
+    background-color: none;
+    height: 740px;
+    width: 79%;
+    float: left;
+    z-index: 0; /* Set the z-insdex of the map */
+    }
+
+.compenents{
+    /* background-color: black; */
+    height: 740px;
+    width: 21%;
+    float: right;
+    font-size:13px
+    }
+
+.drop_select{
+        width: 250px;
+        background-color: black;
+        color: white;
+
+    }
+
+.mapsection{
+    margin-left:350px;
+    color: white;
+
+ }
+ 
+.Analysissection{
+    margin-left:570px;
+    color: white;
+
+ }

@@ -1,0 +1,469 @@
+/* Styles */
+
+
+
+/* Page index.htm */
+.main{width:100%;
+	height:850px;
+	/* background: linear-gradient(rgba(6, 3, 21, .5), rgba(6, 3, 21, .5)), url(../img/about1.jpg) center center no-repeat; */
+    background-size: cover;
+	}
+	
+	
+	.caption{
+	width:100%;
+	height:80px;	
+	position:absolute;
+	top:60px;
+	left:0px;
+	color:#B5179E;
+	padding:20px;
+	text-align:center;
+	font-size:42px;
+	font-style:italic;
+	font-weight:bold;
+	}
+	
+	.container{
+		width:50%;
+		height:500px;	
+		position:absolute;
+		top:150px;
+		left:25%;
+	}
+	
+	
+	.text{
+		width:90%;
+		height:40px;
+		position: absolute;
+		top:0px;
+		left:5%;
+		padding-top:15px;
+		font-size:22px;
+		text-align: center;
+		color:white;
+	}
+	
+	#form_login{
+		width:90%;
+		height:280px;
+		position: absolute;
+		top:70px;
+		left:5%;
+		background-color: #b5f10de0;
+		border-radius:10px;
+	}
+	
+	
+	.form_input{
+		width:100%;
+		height:80px;
+	}
+	
+	label{
+		font-size:22px;
+		font-weight: bold;
+		margin-left:20px;
+	
+	}
+	
+	
+	input[type="text"]{
+		width:80%;
+		height: 30px;
+		margin-left:20px;
+		border:none;
+		border-radius:8px;
+	}
+	
+	input::placeholder{
+		color:black;
+		padding-left: 10px;
+	}
+	
+	
+	input[type="password"]{
+		width:80%;
+		height: 30px;
+		margin-left:20px;
+		border:none;
+		border-radius:8px;
+	}
+	
+	
+	.buttons{
+		width:100%;
+		height:80px;
+		position: absolute;
+		top:200px;
+		left:0px;
+	}
+	
+	
+	#btn_register{
+		width:20%;
+		padding:5px;
+		margin-left:15%;
+		margin-top:10px;
+		background-color: #AA44DA;
+		color:white;
+		font-weight: bold;
+		border:none;
+		font-size:18px;
+		border-radius: 8px;
+		float:left;
+	}
+	
+	#btn_register:hover{
+		cursor: pointer;
+	}
+	
+	
+	
+	
+	#btn_clear{
+		width:20%;
+		padding:5px;
+		margin-left:20%;
+		margin-top:10px;
+		background-color:#FBFE72;
+		color:black;
+		font-weight: bold;
+		border:none;
+		font-size:18px;
+		border-radius: 8px;
+		float:left;
+	}
+	
+	#btn_clear:hover{
+		cursor: pointer;
+	}
+	
+	
+	.for_user{
+		width:100%;
+		height:40px;
+		position: absolute;
+		top:360px;
+		left:0px;
+		font-size:18px;
+		text-align: center;
+		color:white;
+	}
+	
+	
+	.for_user a{
+		color:#FBFE72;
+	}
+	
+	
+	
+	/* Page info.htm */
+	.info_main{width:100%;
+		height:800px;
+		background-color:#EDDDF9;
+		position: relative;
+		}
+		
+	
+	header{
+		width:100%;
+		height:100px;
+		background-color: #4C036E;
+		position:absolute;
+		top:0px;
+		left:0px;
+		color:white;
+	}
+	
+	
+	
+	.container1{
+		width:100%;
+		height:500px;
+		position:absolute;
+		top:100px;
+		left:0px;
+		color:#060A0E;
+	}
+	
+	
+	.text1{
+		width:60%;
+		height: 500px;
+		position: absolute;
+		top:60px;
+		left:20%;
+		font-size:20px;
+		line-height: 1.5;
+		text-indent:20px;
+		font-style: italic;
+	}
+	
+	
+	.info_user{
+		width:30%;
+		height:50px;
+		color: #fbfe72;
+		position: absolute;
+		top:35px;
+		left:50%;
+		text-align: center;
+		font-size:24px;
+	}
+	
+	.block_button{
+		width:20%;
+		height:50px;
+		position: absolute;
+		top:35px;
+		left:80%;
+	}
+	
+	#btn_sign_out{
+		width:35%;
+		background-color: #7D92BE;
+		border:none;
+		border-radius: 8px;
+		padding: 5px;
+		font-size:16px;
+		color:white;
+	}
+	
+	
+	#btn_sign_out:hover{
+		cursor: pointer;
+	}
+	
+	
+	/* Page sign_in */
+	
+	#form_sign_in{
+		width:90%;
+		height:280px;
+		position: absolute;
+		top:70px;
+		left:5%;
+		background-color: #DAC0E7;
+		border-radius:10px;
+	}
+	
+	
+	.form_input{
+		width:100%;
+		height:80px;
+	}
+	
+	label{
+		font-size:22px;
+		font-weight: bold;
+		margin-left:20px;
+	
+	}
+	
+	
+	input[type="text"]{
+		width:80%;
+		height: 30px;
+		margin-left:20px;
+		border:none;
+		border-radius:8px;
+	}
+	
+	input::placeholder{
+		color:black;
+		padding-left: 10px;
+	}
+	
+	
+	input[type="password"]{
+		width:80%;
+		height: 30px;
+		margin-left:20px;
+		border:none;
+		border-radius:8px;
+	}
+	
+	
+	.buttons{
+		width:100%;
+		height:80px;
+		position: absolute;
+		top:200px;
+		left:0px;
+	}
+	
+	
+	#btn_sign_in{
+		width:20%;
+		padding:5px;
+		margin-left:3%;
+		margin-top:10px;
+		background-color: #AA44DA;
+		color:white;
+		font-weight: bold;
+		border:none;
+		font-size:18px;
+		border-radius: 8px;
+		float:left;
+	}
+	
+	#btn_sign_in:hover{
+		cursor: pointer;
+	}
+	
+	
+	
+	
+	#btn_clear{
+		width:20%;
+		padding:5px;
+		margin-left:20%;
+		margin-top:10px;
+		background-color:#FBFE72;
+		color:black;
+		font-weight: bold;
+		border:none;
+		font-size:18px;
+		border-radius: 8px;
+		float:left;
+	}
+	
+	#btn_clear:hover{
+		cursor: pointer;
+	}
+	
+	
+	.for_user{
+		width:100%;
+		height:40px;
+		position: absolute;
+		top:360px;
+		left:0px;
+		font-size:18px;
+		text-align: center;
+		color:white;
+	}
+	
+	
+	.for_user a{
+		color:#FBFE72;
+	}
+	
+	
+	.for_login{
+		width:100%;
+		height:40px;
+		position: absolute;
+		top:360px;
+		left:0px;
+		font-size:18px;
+		text-align: center;
+		color:white;
+	}
+	
+	
+	.for_login a{
+		color:#B5179E;
+	}
+	.signupMessage1{
+		color: red; 
+		margin-top: 500px;
+		margin-left: 100px;
+
+	}
+.continue-button{
+	display: none; 	
+		position: absolute; 
+		margin-top: 59px; 
+		margin-left:220px; 
+		color:green
+}
+/* Mobile setting Start */
+	@media (max-width: 480px) {
+		#btn_register{
+			width:50%;
+			padding:5px;
+			margin-left:1%;
+			margin-top:10px;
+			background-color: #AA44DA;
+			color:white;
+			font-weight: bold;
+			border:none;
+			font-size:18px;
+			border-radius: 8px;
+			float:left;
+	}
+	.text{
+		width:90%;
+		height:40px;
+		position: absolute;
+		top:0px;
+		left:5%;
+		padding-top:15px;
+		font-size:17px;
+		text-align: center;
+		color:white;
+	}
+	.accounting{
+		font-size: 10px;
+		/* width: 90%; */
+		margin-right: 30px;
+	}
+	.caption{
+		width:100%;
+		height:90px;	
+		position:absolute;
+		top:60px;
+		left:0px;
+		color:#B5179E;
+		padding:20px;
+		text-align:center;
+		font-size:32px;
+		font-style:italic;
+		font-weight:bold;
+		}
+		
+/* Page index.htm */
+.main{width:100%;
+	height:620px;
+	background: linear-gradient(rgba(6, 3, 21, .5), rgba(6, 3, 21, .5)), url(../img/about1.jpg) center center no-repeat;
+    background-size: cover;
+	}
+	.form_input{
+		font-size: 15px;
+		
+	}
+
+	#btn_sign_in{
+		width:40%;
+		padding:5px;
+		margin-left:25%;
+		margin-top:10px;
+		background-color: #AA44DA;
+		color:white;
+		font-weight: bold;
+		border:none;
+		font-size:18px;
+		border-radius: 8px;
+		float:left;
+	}
+
+	.signupMessage1{
+		color: red; 
+		margin-top: 450px;
+		margin-left: 0px;
+		font-size: 12px;
+		/* width: 100%; */
+
+	}
+	.continue-button{
+		display: none; 	
+			position: absolute; 
+			margin-top: 100px; 
+			margin-left:35px; 
+			background-color: red;
+	}
+	}
+	

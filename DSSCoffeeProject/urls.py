@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from DSSCoffeeAPP import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('',views.map.as_view(), name='map'),
+    path("ndvi",views.ndvi.as_view(),name="ndvi")
+
 ]
