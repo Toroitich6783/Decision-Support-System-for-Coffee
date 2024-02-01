@@ -91,6 +91,190 @@ class map(TemplateView):
         context = self.get_context_data()
         context['form'] = form
         return render(request, self.template_name, context)
-class ndvi(TemplateView):
-    template_name = "index.html"
+
+#ROI: MyField: Ewaso Nyiro
+class MyField(TemplateView):
+    template_name = 'index.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+        # GPS
+        plugins.LocateControl().add_to(Map)
+        #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+        try:
+            global boundary
+            boundary = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/ewaso")
+            Map.center_object(boundary,9);
+            Map.addLayer(boundary,{},"ROI")
+
+            legend_dict = {
+                        'ROI Boundary': '000000',
+            }
+            Map.add_legend(title="Region of Intrest", legend_dict=legend_dict)  
+                    
+            Total_studyArea = boundary.geometry().area()
+            Total_AreaSqKm = ee.Number(Total_studyArea).round()
+            print('Estimated Total areas', Total_AreaSqKm.getInfo())
+        except Exception as e:
+            # Handle the exception. You can customize this part based on how you want to display the error.
+            error_message = f"An error occurred:Please review the previous steps!!!!"
+            context['error_message'] = error_message
+        else:
+                sucess_message = f"Succefully loaded Ewaso  Nyiro ROI"
+                context['sucess_message'] = sucess_message
+            
+        
+        Map.add_child(folium.LayerControl())
+        figure.render()
+        areaestimate1=Total_AreaSqKm.getInfo()
+        
+        context['areaestimate1'] = areaestimate1
+        context['MyField'] = figure
+        return context
+    def get(self, request, pk=''):
+        form = DateForm()
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+    
+    def post(self, request, pk=''):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data['start_date']
+            end = form.cleaned_data['end_date']
+            global start_date
+            start_date = datetime.strftime(start, "%Y-%m-%d")
+            global end_date
+            end_date = datetime.strftime(end, "%Y-%m-%d")
+            print(start_date)
+            print(end_date)
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+#ROI: MyField2
+class MyField2(TemplateView):
+    template_name = 'index.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+        # GPS
+        plugins.LocateControl().add_to(Map)
+        #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+        try:
+            global boundary
+            boundary = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Siaya")
+            Map.center_object(boundary,9);
+            Map.addLayer(boundary,{},"ROI")
+            legend_dict = {
+                        'ROI Boundary': '000000',
+            }
+            Map.add_legend(title="Region of Intrest", legend_dict=legend_dict)  
+        except Exception as e:
+            # Handle the exception. You can customize this part based on how you want to display the error.
+            error_message = f"An error occurred:Please review the previous steps!!!!"
+            context['error_message'] = error_message
+        else:
+                sucess_message = f"Succefully loaded Siaya ROI"
+                context['sucess_message'] = sucess_message
+                
+
+        Map.add_child(folium.LayerControl())
+        figure.render()
+        
+        context['MyField2'] = figure
+        return context
+    def get(self, request, pk=''):
+        form = DateForm()
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+    
+    def post(self, request, pk=''):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data['start_date']
+            end = form.cleaned_data['end_date']
+            global start_date
+            start_date = datetime.strftime(start, "%Y-%m-%d")
+            global end_date
+            end_date = datetime.strftime(end, "%Y-%m-%d")
+            print(start_date)
+            print(end_date)
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+    
+#ROI: MyField2
+class MyField3(TemplateView):
+    template_name = 'index.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+        # GPS
+        plugins.LocateControl().add_to(Map)
+        #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+        try:
+            global boundary
+            boundary = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Homa_Bay")
+            Map.center_object(boundary,9);
+            Map.addLayer(boundary,{},"ROI")
+            legend_dict = {
+                        'ROI Boundary': '000000',
+            }
+            Map.add_legend(title="Region of Intrest", legend_dict=legend_dict)  
+        except Exception as e:
+            # Handle the exception. You can customize this part based on how you want to display the error.
+            error_message = f"An error occurred:Please review the previous steps!!!!"
+            context['error_message'] = error_message
+        else:
+                sucess_message = f"Succefully loaded  Homa Bay ROI"
+                context['sucess_message'] = sucess_message
+
+        Map.add_child(folium.LayerControl())
+        figure.render()
+        
+        context['MyField3'] = figure
+        return context
+    def get(self, request, pk=''):
+        form = DateForm()
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+    
+    def post(self, request, pk=''):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data['start_date']
+            end = form.cleaned_data['end_date']
+            global start_date
+            start_date = datetime.strftime(start, "%Y-%m-%d")
+            global end_date
+            end_date = datetime.strftime(end, "%Y-%m-%d")
+            print(start_date)
+            print(end_date)
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
     
