@@ -26,7 +26,7 @@ To get a local copy up and running follow these simple example steps.
 To set up this project successfully, Make sure you have python install and miniconda or anaconda installed.
 * Python
   ```sh
-  <a href=" https://www.python.org/"> https://www.python.org/</a>
+https://www.python.org/
   ```
 * Downloading conda: Anaconda/Miniconda
   ```sh
@@ -41,7 +41,7 @@ _Below is a procedural guidelines to install and setting up the this project._
 
 2. Clone the repo
    ```sh
-   git clone https://github.com/Toroitich6783/Decision-Support-System-for-Coffee..git
+   git clone https://github.com/Toroitich6783/Decision-Support-System-for-Coffee.git
    ```
 3. create a python virtual env:
    ```sh

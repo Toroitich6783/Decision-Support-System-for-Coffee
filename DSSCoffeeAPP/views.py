@@ -92,7 +92,8 @@ class map(TemplateView):
         context['form'] = form
         return render(request, self.template_name, context)
 
-#ROI: MyField: Ewaso Nyiro
+# Test Fields:
+#ROI: MyField2
 class MyField(TemplateView):
     template_name = 'index.html'
     
@@ -110,32 +111,24 @@ class MyField(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
         try:
             global boundary
-            boundary = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/ewaso")
+            boundary = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Homa_Bay")
             Map.center_object(boundary,9);
             Map.addLayer(boundary,{},"ROI")
-
             legend_dict = {
                         'ROI Boundary': '000000',
             }
             Map.add_legend(title="Region of Intrest", legend_dict=legend_dict)  
-                    
-            Total_studyArea = boundary.geometry().area()
-            Total_AreaSqKm = ee.Number(Total_studyArea).round()
-            print('Estimated Total areas', Total_AreaSqKm.getInfo())
         except Exception as e:
             # Handle the exception. You can customize this part based on how you want to display the error.
             error_message = f"An error occurred:Please review the previous steps!!!!"
             context['error_message'] = error_message
         else:
-                sucess_message = f"Succefully loaded Ewaso  Nyiro ROI"
+                sucess_message = f"Succefully loaded  Homa Bay ROI"
                 context['sucess_message'] = sucess_message
-            
-        
+
         Map.add_child(folium.LayerControl())
         figure.render()
-        areaestimate1=Total_AreaSqKm.getInfo()
         
-        context['areaestimate1'] = areaestimate1
         context['MyField'] = figure
         return context
     def get(self, request, pk=''):
