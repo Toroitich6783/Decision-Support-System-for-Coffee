@@ -25,9 +25,8 @@ To get a local copy up and running follow these simple example steps.
 
 To set up this project successfully, Make sure you have python install and miniconda or anaconda installed.
 * Python
-  ```sh
 https://www.python.org/
-  ```
+  
 * Downloading conda: Anaconda/Miniconda
   ```sh
   https://docs.conda.io/projects/conda/en/stable/user-guide/install/download.html
