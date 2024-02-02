@@ -3,58 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkbox Redirect</title>
+    <title>Document</title>
+    <style>
+        .runButton {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .runButton:hover {
+            background-color:red;
+        }
+    </style>
 </head>
 <body>
 
-    <div style="color: white;">
-        <label style="color: white" for="spectral_dropdown">Data sets:</label>
-        <form id="redirectForm">
-            <label style="color: white;">
-                <input type="checkbox" name="option1" value="{% url 'map' %}" id="checkbox1"> Option 1
-            </label>
-            <br>
-            <label style="color: white;">
-                <input type="checkbox" name="option2" value="{% url 'map' %}" id="checkbox2"> Option 2
-            </label>
-        </form>
+    <button class="runButton" onclick="showSpinner22()">Show Spinner22</button>
 
-        <script>
-            // Add event listener for checkbox change
-            document.getElementById('redirectForm').addEventListener('change', function() {
-                storeSelection();
-            });
-
-            // Restore selection on page load
-            window.onload = function() {
-                restoreSelection();
-            };
-
-            function storeSelection() {
-                var form = document.getElementById('redirectForm');
-                var checkboxes = form.querySelectorAll('input[type="checkbox"]:checked');
-
-                if (checkboxes.length > 0) {
-                    var selectedOption = checkboxes[0].value;
-                    localStorage.setItem('selectedOption', selectedOption);
-                } else {
-                    // If none selected, clear the stored option
-                    localStorage.removeItem('selectedOption');
-                }
-            }
-
-            function restoreSelection() {
-                var storedOption = localStorage.getItem('selectedOption');
-                if (storedOption) {
-                    // Check the corresponding checkbox based on the stored option
-                    document.getElementById('checkbox1').checked = (storedOption === "{% url 'map' %}");
-                    document.getElementById('checkbox2').checked = (storedOption === "{% url 'map' %}");
-                }
-            }
-        </script>
-
-        <br>
-    </div>
+    <script>
+        function showSpinner22() {
+            // Your logic to show the spinner goes here
+            alert("Spinner will be shown here.");
+        }
+    </script>
 
 </body>
 </html>
