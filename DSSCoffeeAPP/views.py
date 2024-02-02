@@ -270,4 +270,296 @@ class MyField3(TemplateView):
         context = self.get_context_data()
         context['form'] = form
         return render(request, self.template_name, context)
+
+# Area Estimation: Meters
+class areameters(TemplateView):
+    template_name = 'index.html'
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+        # GPS
+        plugins.LocateControl().add_to(Map)
+        #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+
+        
+        Map.center_object(boundary,9);
+        Map.addLayer(boundary,{},"MyField")
+          
+        Total_studyArea = boundary.geometry().area()
+        Total_AreaSqKm = ee.Number(Total_studyArea).round()
+        print('Estimated areas(Acres)', Total_AreaSqKm.getInfo())
+        
+        
+        
+        Map.add_child(folium.LayerControl())
+        figure.render()
+        areaestimate1=Total_AreaSqKm.getInfo()
+        
+        context['areaestimate1'] = areaestimate1
+        context['areameters'] = figure
+        return context
+    def get(self, request, pk=''):
+            form = DateForm()
+            context = self.get_context_data()
+            context['form'] = form
+            return render(request, self.template_name, context)
+    
+    def post(self, request, pk=''):
+            form = DateForm(request.POST)
+            if form.is_valid():
+                start = form.cleaned_data['start_date']
+                end = form.cleaned_data['end_date']
+                start_date = datetime.strftime(start, "%Y-%m-%d")
+                end_date = datetime.strftime(end, "%Y-%m-%d")
+                print(start_date)
+                print(end_date)
+                context = self.get_context_data()
+                context['form'] = form
+                return render(request, self.template_name, context)
+
+# Area Estimation: Acres
+class Acres(TemplateView):
+    ee.Initialize()
+    template_name = 'index.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+        # GPS
+        plugins.LocateControl().add_to(Map)
+        #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+
+        
+        Map.center_object(boundary,9);
+        Map.addLayer(boundary,{},"MyField") 
+         
+        Total_studyArea = boundary.geometry().area()
+        Total_AreaSqKm = ee.Number(Total_studyArea).divide(4046.86).round()
+        print('Estimated areas(Acres)', Total_AreaSqKm.getInfo())
+        
+        
+        Map.add_child(folium.LayerControl())
+        figure.render()
+        areaestimate1=Total_AreaSqKm.getInfo()
+        
+        context['areaestimate1'] = areaestimate1
+        context['Acres'] = figure
+        return context
+    def get(self, request, pk=''):
+            form = DateForm()
+            context = self.get_context_data()
+            context['form'] = form
+            return render(request, self.template_name, context)
+    
+    def post(self, request, pk=''):
+            form = DateForm(request.POST)
+            if form.is_valid():
+                start = form.cleaned_data['start_date']
+                end = form.cleaned_data['end_date']
+                start_date = datetime.strftime(start, "%Y-%m-%d")
+                end_date = datetime.strftime(end, "%Y-%m-%d")
+                print(start_date)
+                print(end_date)
+                context = self.get_context_data()
+                context['form'] = form
+                return render(request, self.template_name, context)
+
+# Area Estimation: Hectares
+class Hectares(TemplateView):
+    ee.Initialize()
+    template_name = 'index.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+        # GPS
+        plugins.LocateControl().add_to(Map)
+        #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+
+        
+        Map.center_object(boundary,9);
+        Map.addLayer(boundary,{},"MyField")
+          
+        Total_studyArea = boundary.geometry().area()
+        Total_AreaSqKm = ee.Number(Total_studyArea).divide(10000).round()
+        print('Estimated areas(Hectares)', Total_AreaSqKm.getInfo())
+        
+        
+        Map.add_child(folium.LayerControl())
+        figure.render()
+        areaestimate1=Total_AreaSqKm.getInfo()
+        
+        context['areaestimate1'] = areaestimate1
+        context['Hectares'] = figure
+        return context
+    def get(self, request, pk=''):
+            form = DateForm()
+            context = self.get_context_data()
+            context['form'] = form
+            return render(request, self.template_name, context)
+    
+    def post(self, request, pk=''):
+            form = DateForm(request.POST)
+            if form.is_valid():
+                start = form.cleaned_data['start_date']
+                end = form.cleaned_data['end_date']
+                start_date = datetime.strftime(start, "%Y-%m-%d")
+                end_date = datetime.strftime(end, "%Y-%m-%d")
+                print(start_date)
+                print(end_date)
+                context = self.get_context_data()
+                context['form'] = form
+                return render(request, self.template_name, context)
+
+# Area Estimation: Kilometers
+class Kilometers(TemplateView):
+    ee.Initialize()
+    template_name = 'index.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+        # GPS
+        plugins.LocateControl().add_to(Map)
+        #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+
+        
+        Map.center_object(boundary,9);
+        Map.addLayer(boundary,{},"MyField")
+          
+        Total_studyArea = boundary.geometry().area()
+        Total_AreaSqKm = ee.Number(Total_studyArea).divide(1000000).round()
+        print('Estimated areas(KM)', Total_AreaSqKm.getInfo())
+        
+        
+        Map.add_child(folium.LayerControl())
+        figure.render()
+        areaestimate1=Total_AreaSqKm.getInfo()
+        
+        context['areaestimate1'] = areaestimate1
+        context['Kilometers'] = figure
+        return context
+    def get(self, request, pk=''):
+            form = DateForm()
+            context = self.get_context_data()
+            context['form'] = form
+            return render(request, self.template_name, context)
+    
+    def post(self, request, pk=''):
+            form = DateForm(request.POST)
+            if form.is_valid():
+                start = form.cleaned_data['start_date']
+                end = form.cleaned_data['end_date']
+                start_date = datetime.strftime(start, "%Y-%m-%d")
+                end_date = datetime.strftime(end, "%Y-%m-%d")
+                print(start_date)
+                print(end_date)
+                context = self.get_context_data()
+                context['form'] = form
+                return render(request, self.template_name, context)
+            
+#Sentinel 2A Data.
+class Sentinel_Imagery(TemplateView):
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+        # GPS
+        plugins.LocateControl().add_to(Map)
+        #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+        try:
+            global boundary
+            Map.center_object(boundary,9);
+            Map.addLayer(boundary,{},"ROI")
+
+            Map.addLayer(boundary,{},"Boundary")
+        
+            Map.center_object(boundary,9);
+            
+            global season
+            season = ee.Filter.date(start_date,end_date);#Filter image based on the time frame(start_date and end_date)
+ #-------------SENTINEL_2A DATA----------------------#  
+            global sentinel_2A
+            sentinel_2A = ee.ImageCollection('COPERNICUS/S2')\
+            .filterBounds(boundary)\
+            .filter(season)\
+            .median()\
+            .select('B1','B2', 'B3', 'B4', 'B5', 'B6', 'B7','B8', 'B10', 'B11')\
+            .clip(boundary)
+            
+            sentinel_2Avispar={"min":0, "max":4000,"bands": ['B4','B3','B2']}#Visualization parameters used.
+
+            Map.addLayer(sentinel_2A,sentinel_2Avispar,"Sentinel Imagery")
+                    
+        
+        except Exception as e:
+            # Handle the exception. You can customize this part based on how you want to display the error.
+            error_message = f"An error occurred:Please review the previous steps!!!!"
+            context['error_message'] = error_message
+        else:
+                sucess_message = f"Succefully loaded Sentinel 2A for your region"
+                context['sucess_message'] = sucess_message
+            
+        
+        Map.add_child(folium.LayerControl())
+        figure.render()
+        Total_studyArea = boundary.geometry().area()
+        Total_AreaSqKm = ee.Number(Total_studyArea).round()
+        print('Estimated Total areas', Total_AreaSqKm.getInfo())
+        areaestimate1=Total_AreaSqKm.getInfo()
+        
+        context['areaestimate1'] = areaestimate1
+        context['Sentinel_Imagery'] = figure
+        return context
+    def get(self, request, pk=''):
+        form = DateForm()
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+    
+    def post(self, request, pk=''):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data['start_date']
+            end = form.cleaned_data['end_date']
+            global start_date
+            start_date = datetime.strftime(start, "%Y-%m-%d")
+            global end_date
+            end_date = datetime.strftime(end, "%Y-%m-%d")
+            print(start_date)
+            print(end_date)
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)

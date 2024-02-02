@@ -80,6 +80,11 @@
     {{MyField.header.render|safe}}
     {{MyField2.header.render|safe}}
     {{MyField3.header.render|safe}}
+    {{ Acres.header.render|safe }} 
+    {{ Hectares.header.render|safe }} 
+    {{ Kilometers.header.render|safe }} 
+    {{ areameters.header.render|safe }}
+    {{ Sentinel_Imagery.header.render|safe }}
 
     
    </script> 
@@ -306,14 +311,16 @@
 
     <section class="section dashboard">
     <div class="maparea">
-        {{map.html.render|safe}}
-        {{MyField.html.render|safe}}
-        {{MyField2.html.render|safe}}
-        {{MyField3.html.render|safe}}
+      {{map.html.render|safe}}
+      {{MyField.html.render|safe}}
+      {{MyField2.html.render|safe}}
+      {{MyField3.html.render|safe}}
+      {{areameters.html.render|safe}}
+      {{Acres.html.render|safe}}
+      {{Hectares.html.render|safe}}
+      {{Kilometers.html.render|safe}} 
+      {{Sentinel_Imagery.html.render|safe}}
               
-              
-
-        
       </div>
 
       <h3 id="successMessage" class="message success-message">{{ success_message }}</h3>
@@ -340,7 +347,7 @@
   <div class="compenents">
   
   <!--Field | Area start-->
-  <label style="color: white" for="Selectregion_dropdown">ROI | Field</label><br>
+  <label style="color: white" for="Selectregion_dropdown">ROI | Field:</label><br>
   <select class="drop_select" onchange="location = this.value;">
         <option value="" selected disabled> Select Region/Field</option>
         <option value="{% url 'MyField' %}">Kipkelion west constituency</option>
@@ -354,8 +361,6 @@
         <option value="">Kisii</option>
         <option value="">Kericho</option>
 
-
-
       </select>
       <br>
       <br>
@@ -364,18 +369,20 @@
 
   
   <!--Area Measured start-->
-   <label style="color: white; width: 200px;" >Area Measured:</label><br>
+   <label style="color: white; width: 200px;" >Field Measurement:</label><br>
     <textarea style="background:black; color:white" rows="1" cols="33" readonly>{{ areaestimate1 }}</textarea>
     <br>
     <br>
   <!--Area Measured End-->
   
   <!--Area Units start-->
-    <label style="color: white;  width: 200px;"  for="Area_Units_dropdown">Area Unit (Auto selects):</label><br>
+    <label style="color: white;  width: 200px;"  for="Area_Units_dropdown">Units Conversion:</label><br>
     <select class="drop_select" id="drop_select1" onchange="storeSelection('drop_select1', this.value); location = this.value;">
       <option selected disabled>Select Area Unit</option>
-      <option value="">Near-Surface Weather</option>
-      <option value="#">Global Forecast System</option>
+      <option value="{% url 'areameters' %}">Meters</option>
+      <option value="{% url 'Acres' %}">Acres(s)</option>
+      <option value="{% url 'Hectares' %}">Hectares</option>
+      <option value="{% url 'Kilometers' %}">Kilometers</option>   
     </select>
     
     <script>
@@ -388,7 +395,7 @@
     }
     </script>
     <br>
-    <br>
+    
   <!--Area Units End-->
   
   <!--Date Range Start-->
@@ -444,9 +451,12 @@
     {{MyField.script.render|safe}}
     {{MyField2.script.render|safe}}
     {{MyField3.script.render|safe}}
-
-  
-      </script>
+    {{ areameters.script.render|safe }}
+    {{ Acres.script.render|safe }}
+    {{ Hectares.script.render|safe }}
+    {{ Kilometers.script.render|safe }} 
+    {{ Sentinel_Imagery.script.render|safe }}
+  </script>
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
