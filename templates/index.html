@@ -85,6 +85,9 @@
     {{ Kilometers.header.render|safe }} 
     {{ areameters.header.render|safe }}
     {{ Sentinel_Imagery.header.render|safe }}
+    {{ soil.header.render|safe }}
+
+    
 
     
    </script> 
@@ -207,7 +210,7 @@
   </header><!-- End Header -->
 
   <!-- ======= Sidebar ======= -->
-  <aside id="sidebar" class="sidebar" style="z-index: 9999; position: absolute;">
+  <aside id="sidebar" class="sidebar" style="z-index: 9999; position: absolute; height: 101%;">
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
@@ -320,8 +323,9 @@
       {{Hectares.html.render|safe}}
       {{Kilometers.html.render|safe}} 
       {{Sentinel_Imagery.html.render|safe}}
-              
-      </div>
+      {{soil.html.render|safe}}
+
+    </div>
 
       <h3 id="successMessage" class="message success-message">{{ success_message }}</h3>
       <h3 id="errorMessage" class="message error-message">{{ error_message }}</h3>
@@ -408,17 +412,79 @@
     <br>
   <!--Date Range End-->
     
-  <!--Satellite Datastart-->
-    <label style="color: white"  for="spectral_dropdown">Satelite Data:</label>
-    <label for="Satelite_Data_dropdown">Satellite Data:</label><br>
-    <select class="drop_select" onchange="location = this.value;">
-      <option value="" selected disabled>Select Satelite Data</option>
-      <option value="">Near-Surface Weather</option>
-      <option value="#">Global Forecast System</option>
-    </select>
+  <!--DataSetsstart-->
+  <div style="color: white;">
+    <label style="color: white" for="spectral_dropdown">Data Sets | Parameters:</label>
+    <form id="redirectForm">
+        <label style="color: white;">
+            <input type="checkbox" name="option1" value="{% url 'map' %}" id="checkboxOption1" onchange="saveSelection()">
+            Rainfall
+        </label>
+        <br>
+        <label style="color: white;">
+            <input type="checkbox" name="option2" value="{% url 'map' %}" id="checkboxOption2" onchange="saveSelection()">
+            Temperature
+        </label>
+        <br>
+        <label style="color: white;">
+          <input type="checkbox" name="option3" value="{% url 'soil' %}" id="checkboxOption3" onchange="saveSelection()">
+            Soils
+        </label>
+        <br>
+        <label style="color: white;">
+          <input type="checkbox" name="option4" value="{% url 'map' %}" id="checkboxOption4" onchange="saveSelection()">
+          DEM | Slope
+      </label>
+      <br>
+      <label style="color: white;">
+          <input type="checkbox" name="option5" value="{% url 'map' %}" id="checkboxOption5" onchange="saveSelection()">
+          Sentinel 2A
+      </label>
+      <br>
+    </form>
+
+    <script>
+        // Restore checkbox state from local storage on page load
+        window.onload = function () {
+            restoreSelection();
+        };
+
+        // Add event listener for checkbox change
+        document.getElementById('redirectForm').addEventListener('change', function () {
+            redirect();
+        });
+
+        function saveSelection() {
+            var form = document.getElementById('redirectForm');
+            var checkboxes = form.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(function (checkbox) {
+                localStorage.setItem(checkbox.id, checkbox.checked);
+            });
+        }
+
+        function restoreSelection() {
+            var form = document.getElementById('redirectForm');
+            var checkboxes = form.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(function (checkbox) {
+                var isChecked = localStorage.getItem(checkbox.id) === 'true';
+                checkbox.checked = isChecked;
+            });
+        }
+
+        function redirect() {
+            var form = document.getElementById('redirectForm');
+            var checkboxes = form.querySelectorAll('input[type="checkbox"]:checked');
+
+            if (checkboxes.length > 0) {
+                var selectedOption = checkboxes[0].value;
+                window.location.href = selectedOption;
+            }
+        }
+    </script>
+
     <br>
-    <br>
-  <!--Satellite Data End-->
+</div>
+  <!--DataSets End-->
   
   <!--Variable/spectral analysis start-->
     <label class="Variables" style="color: white; width: 200px;"  for="spectral_dropdown">Variable | Spectral Analysis</label>
@@ -434,7 +500,6 @@
     <br>
   <!--Variable/spectral analysis End-->
   
-  <label style="color: white; width: 200px;"  for="Analysis_dropdown">Analysis Chart:</label><br>
     
   
   </div>
@@ -456,6 +521,8 @@
     {{ Hectares.script.render|safe }}
     {{ Kilometers.script.render|safe }} 
     {{ Sentinel_Imagery.script.render|safe }}
+    {{ soil.script.render|safe }}
+    
   </script>
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>

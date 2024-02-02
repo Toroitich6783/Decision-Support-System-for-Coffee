@@ -28,4 +28,7 @@ urlpatterns = [
     path('Kilometers',views.Kilometers.as_view(),name='Kilometers'),
     path('areameters',views.areameters.as_view(),name='areameters'),
     path('Sentinel_Imagery',views.Sentinel_Imagery.as_view(),name='Sentinel_Imagery'),
+    path('soil',views.soil.as_view(),name='soil'),
+
+    
 ]

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkbox Redirect</title>
+</head>
+<body>
+
+    <div style="color: white;">
+        <label style="color: white" for="spectral_dropdown">Data sets:</label>
+        <form id="redirectForm">
+            <label style="color: white;">
+                <input type="checkbox" name="option1" value="{% url 'map' %}" id="checkbox1"> Option 1
+            </label>
+            <br>
+            <label style="color: white;">
+                <input type="checkbox" name="option2" value="{% url 'map' %}" id="checkbox2"> Option 2
+            </label>
+        </form>
+
+        <script>
+            // Add event listener for checkbox change
+            document.getElementById('redirectForm').addEventListener('change', function() {
+                storeSelection();
+            });
+
+            // Restore selection on page load
+            window.onload = function() {
+                restoreSelection();
+            };
+
+            function storeSelection() {
+                var form = document.getElementById('redirectForm');
+                var checkboxes = form.querySelectorAll('input[type="checkbox"]:checked');
+
+                if (checkboxes.length > 0) {
+                    var selectedOption = checkboxes[0].value;
+                    localStorage.setItem('selectedOption', selectedOption);
+                } else {
+                    // If none selected, clear the stored option
+                    localStorage.removeItem('selectedOption');
+                }
+            }
+
+            function restoreSelection() {
+                var storedOption = localStorage.getItem('selectedOption');
+                if (storedOption) {
+                    // Check the corresponding checkbox based on the stored option
+                    document.getElementById('checkbox1').checked = (storedOption === "{% url 'map' %}");
+                    document.getElementById('checkbox2').checked = (storedOption === "{% url 'map' %}");
+                }
+            }
+        </script>
+
+        <br>
+    </div>
+
+</body>
+</html>

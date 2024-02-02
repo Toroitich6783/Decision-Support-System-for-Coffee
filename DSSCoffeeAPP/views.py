@@ -563,3 +563,111 @@ class Sentinel_Imagery(TemplateView):
         context = self.get_context_data()
         context['form'] = form
         return render(request, self.template_name, context)
+
+
+#1). Soil Type
+class soil(TemplateView):
+    template_name = 'index.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        Map.set_center(-7.799, 53.484, 7)
+ #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+      #Add GPS (Global Postion System)
+        plugins.LocateControl().add_to(Map)
+ #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+
+        # try:  
+            
+        # Map.centerObject(boundary,17)
+        
+        GeologicalMap=ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Ireland_SoilData")
+        Map.centerObject(GeologicalMap,12)
+        states = GeologicalMap
+
+        vis_params = {
+            'color': '000000', 
+            'colorOpacity': 1,
+            'pointSize': 3,
+            'pointShape': 'circle',
+            'width': 2,
+            'lineType': 'solid', 
+            'fillColorOpacity': 1
+        }
+
+        palette = [       
+                '0000FF', '008000', 'FF0000', 'FFA500', '800080',
+                            '00FFFF', 'FFC0CB', 'FFFF00', 'A52A2A'
+                ]
+        # Map
+        # Convert the Earth Engine FeatureCollection to GeoJSON
+        geojson_data = GeologicalMap.getInfo()
+        Map.add_styled_vector(states, column="Name", palette=palette, layer_name="Soil Type", **vis_params)
+
+
+        # Add GeoJSON layer to the map with GeoJsonTooltip
+        folium.GeoJson(
+            geojson_data,
+            name='Soils Map',
+            tooltip=folium.GeoJsonTooltip(fields=['Name'], labels=True, sticky=False),
+            style_function=lambda feature: {
+            'fillColor': 'green',  # Set the fill color
+            'color': 'none',      # Set the border color
+            'weight': 0,           # Set the border weight
+            'fillOpacity': 0     # Set the fill opacity
+        }
+        ).add_to(Map)
+
+
+        
+        #Adding legend:
+        legend_dict = {
+            'Sand Loam': 'blue',
+            'Loam': 'green',
+            'Clay Loam': 'red',
+            'Loam': 'orange',
+            'Water': 'purple',
+            'Loam': 'orange',
+            'Loam': 'yellow',
+            'Sandy Loam': 'purple',
+            'Laom': 'cyan',
+            }
+        Map.add_legend(title="Soil Type ♠", legend_dict=legend_dict)
+                
+        # except Exception as e:
+        #     # Handle the exception. You can customize this part based on how you want to display the error.
+        #     error_message = f"An error occurred:Please review the previous steps!!!"
+        #     context['error_message'] = error_message
+        # else:
+        #         success_message = f"Soil Type Runned Successfully for Your Region"
+        #         context['success_message'] = success_message
+        Map.add_child(folium.LayerControl())
+        figure.render()
+        context['soil'] = figure
+        context['form'] = DateForm()
+        return context
+    def post(self, request, pk=''):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data['start_date']
+            end = form.cleaned_data['end_date']
+            global start_date
+            start_date = datetime.strftime(start, "%Y-%m-%d")
+            global end_date
+            end_date = datetime.strftime(end, "%Y-%m-%d")
+            print(start_date)
+            print(end_date)
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+    def get(self, request, pk=''):
+        form = DateForm()
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
