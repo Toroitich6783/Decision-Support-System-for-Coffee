@@ -220,9 +220,8 @@
     {{ areameters.header.render|safe }}
     {{ Sentinel_Imagery.header.render|safe }}
     {{ soil.header.render|safe }}
-
-    
-
+    {{ NDVI.header.render|safe }}
+    {{ EVI.header.render|safe}}
     
    </script> 
 
@@ -458,6 +457,9 @@
       {{Kilometers.html.render|safe}} 
       {{Sentinel_Imagery.html.render|safe}}
       {{soil.html.render|safe}}
+      {{NDVI.html.render|safe}}
+      {{EVI.html.render|safe}}
+
 
     </div>
 
@@ -571,13 +573,13 @@
       </label>
       <br>
       <label style="color: white;">
-          <input type="checkbox" name="option5" value="{% url 'map' %}" id="checkboxOption5" onchange="saveSelection()">
+          <input type="checkbox" name="option5" value="{% url 'NDVI' %}" id="checkboxOption5" onchange="saveSelection()">
           Sentinel 2A: NDVI
       </label>
       <br>
       <label style="color: white;">
-        <input type="checkbox" name="option5" value="{% url 'map' %}" id="checkboxOption5" onchange="saveSelection()">
-        Sentinel 2A: EVI | VCI
+        <input type="checkbox" name="option6" value="{% url 'EVI' %}" id="checkboxOption6" onchange="saveSelection()">
+        Sentinel 2A: EVI
     </label>
     <br>
     </form>
@@ -628,7 +630,7 @@
   <!--Variable/spectral analysis start-->
   <label class="Variables" style="color: white; width: 200px;"  for="spectral_dropdown">DSS Overlay:</label>
   <br>
-  <button  class="runButton"  onclick="showspinner22()">Run DSS Analysis</button>
+  <button title="Click me for an example tooltip"  class="runButton"  onclick="showspinner22()">Run DSS Analysis</button>
 
     <script>
         function showspinner22() {
@@ -682,6 +684,9 @@
     {{ Kilometers.script.render|safe }} 
     {{ Sentinel_Imagery.script.render|safe }}
     {{ soil.script.render|safe }}
+    {{ NDVI.script.render|safe }}
+    {{ EVI.script.render|safe }}
+
     
   </script>
 

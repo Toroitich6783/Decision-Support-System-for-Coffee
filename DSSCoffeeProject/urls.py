@@ -29,6 +29,10 @@ urlpatterns = [
     path('areameters',views.areameters.as_view(),name='areameters'),
     path('Sentinel_Imagery',views.Sentinel_Imagery.as_view(),name='Sentinel_Imagery'),
     path('soil',views.soil.as_view(),name='soil'),
+    path('NDVI',views.NDVI.as_view(),name='NDVI'),
+    path('EVI',views.EVI.as_view(),name='EVI'),
+
+    
 
     
 ]
