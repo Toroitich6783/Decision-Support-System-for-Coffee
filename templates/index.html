@@ -211,9 +211,9 @@
 
   <script>
     {{ map.header.render|safe }}
-    {{MyField.header.render|safe}}
-    {{MyField2.header.render|safe}}
-    {{MyField3.header.render|safe}}
+    {{ MyField.header.render|safe}}
+    {{ MyField2.header.render|safe}}
+    {{ MyField3.header.render|safe}}
     {{ Acres.header.render|safe }} 
     {{ Hectares.header.render|safe }} 
     {{ Kilometers.header.render|safe }} 
@@ -222,6 +222,8 @@
     {{ soil.header.render|safe }}
     {{ NDVI.header.render|safe }}
     {{ EVI.header.render|safe}}
+    {{ DEM.header.render|safe}}
+
     
    </script> 
 
@@ -330,11 +332,6 @@
 
      
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="overflow: auto;">
-
-
-
-  
-
 
 
       </ul>
@@ -459,6 +456,8 @@
       {{soil.html.render|safe}}
       {{NDVI.html.render|safe}}
       {{EVI.html.render|safe}}
+      {{DEM.html.render|safe}}
+
 
 
     </div>
@@ -552,6 +551,11 @@
   <div style="color: white;">
     <label style="color: white" for="spectral_dropdown">Data Sets | Parameters:</label>
     <form id="redirectForm">
+      <label style="color: white;">
+        <input type="checkbox" name="option5" value="{% url 'NDVI' %}" id="checkboxOption5" onchange="saveSelection()">
+        Sentinel 2A: NDVI
+    </label>
+    <br>
         <label style="color: white;">
             <input type="checkbox" name="option1" value="{% url 'map' %}" id="checkboxOption1" onchange="saveSelection()">
             Rainfall
@@ -568,15 +572,11 @@
         </label>
         <br>
         <label style="color: white;">
-          <input type="checkbox" name="option4" value="{% url 'map' %}" id="checkboxOption4" onchange="saveSelection()">
+          <input type="checkbox" name="option4" value="{% url 'DEM' %}" id="checkboxOption4" onchange="saveSelection()">
           DEM | Slope
       </label>
       <br>
-      <label style="color: white;">
-          <input type="checkbox" name="option5" value="{% url 'NDVI' %}" id="checkboxOption5" onchange="saveSelection()">
-          Sentinel 2A: NDVI
-      </label>
-      <br>
+     
       <label style="color: white;">
         <input type="checkbox" name="option6" value="{% url 'EVI' %}" id="checkboxOption6" onchange="saveSelection()">
         Sentinel 2A: EVI
@@ -662,7 +662,39 @@
 
   <!--Variable/spectral analysis End-->
   
-    
+  <!--Resetting Everything start-->
+  <label class="Variables" style="color: white; width: 200px;"  for="spectral_dropdown">Reset:</label>
+  <br>
+  <button title="Click me for an example tooltip"  class="runButton"  onclick="showspinner22()">Reset</button>
+
+    <script>
+        function showspinner22() {
+            var container22 = document.getElementById("container22");
+
+            if (container22.style.display === "none") {
+                container22.style.display = "block";
+
+                // Simulate a delay before redirecting (you can adjust the timeout as needed)
+                setTimeout(function () {
+                    container22.style.display = "none";
+                    // Redirect to the desired URL
+                    window.location.href = "{% url 'map' %}";
+                }, 3000); // 3000 milliseconds (3 seconds) delay for demonstration purposes
+            }
+        }
+    </script>
+
+    <div class="running" id="container22" style="display: none; z-index: 9999;">
+        <svg viewBox="0 0 100 100">
+            <defs>
+                <filter id="shadow">
+                    <feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#fc6767"/>
+                </filter>
+            </defs>
+            <circle id="spinner22" style="fill:transparent;stroke:#dd2476;stroke-width: 7px;stroke-linecap: round;filter:url(#shadow);" cx="50" cy="50" r="45"/>
+        </svg>
+    </div>
+
   
   </div>
     <!--compenents End-->
@@ -686,6 +718,7 @@
     {{ soil.script.render|safe }}
     {{ NDVI.script.render|safe }}
     {{ EVI.script.render|safe }}
+    {{ DEM.script.render|safe}}
 
     
   </script>

@@ -29,7 +29,7 @@ class map(TemplateView):
         figure = folium.Figure()   
         Map = geemap.Map()
         Map.add_to(figure)
-        Map.set_center(36.4335, -0.1131, 12)
+        Map.set_center(35.4066, -0.1566, 12)
         
         #mouse position
         fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
@@ -65,6 +65,29 @@ class map(TemplateView):
                 }     
         basemaps['Google Satellite Hybrid'].add_to(Map)
         basemaps['Esri Satellite'].add_to(Map)
+        ###############################################################################
+        #############################Test inputs#######################################
+        ###############################################################################
+        global boundary
+        boundary = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Kipkelion_west")
+        global start_date
+        start_date="2020-01-01"#Set start_date(yy/mon/day)
+        global end_date
+        end_date="2020-03-31"#Set End_date(yy/mon/day)
+
+        season = ee.Filter.date(start_date,end_date);#Filter image based on the time frame(start_date and end_date)
+        global sentinel_2A
+        sentinel_2A = ee.ImageCollection('COPERNICUS/S2')\
+        .filterBounds(boundary)\
+        .filter(season)\
+        .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE",10))\
+        .median()\
+        .select('B1','B2', 'B3', 'B4', 'B5', 'B6', 'B7','B8', 'B10', 'B11')\
+        .clip(boundary)
+
+        ###############################################################################
+        #############################End Test inputs#######################################
+        ###############################################################################
              
         Map.add_child(folium.LayerControl())
         figure.render()
@@ -662,7 +685,6 @@ class EVI(TemplateView):
         figure = folium.Figure()
         Map = geemap.Map()
         Map.add_to(figure)
-        Map.set_center(-7.799, 53.484, 7)
   #mouse position
         fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
         plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
@@ -757,7 +779,6 @@ class soil(TemplateView):
         figure = folium.Figure()
         Map = geemap.Map()
         Map.add_to(figure)
-        Map.set_center(-7.799, 53.484, 7)
  #mouse position
         fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
         plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
@@ -806,9 +827,6 @@ class soil(TemplateView):
             'fillOpacity': 0     # Set the fill opacity
         }
         ).add_to(Map)
-
-
-        
         #Adding legend:
         legend_dict = {
             'Sand Loam': 'blue',
@@ -833,6 +851,164 @@ class soil(TemplateView):
         Map.add_child(folium.LayerControl())
         figure.render()
         context['soil'] = figure
+        context['form'] = DateForm()
+        return context
+    def post(self, request, pk=''):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data['start_date']
+            end = form.cleaned_data['end_date']
+            global start_date
+            start_date = datetime.strftime(start, "%Y-%m-%d")
+            global end_date
+            end_date = datetime.strftime(end, "%Y-%m-%d")
+            print(start_date)
+            print(end_date)
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+    def get(self, request, pk=''):
+        form = DateForm()
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+#2). DEM(Digital Elevation ):
+class DEM(TemplateView):
+    template_name = 'index.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        Map.set_center(-7.799, 53.484, 7)
+ #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+      #Add GPS (Global Postion System)
+        plugins.LocateControl().add_to(Map)
+ #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+
+        try:
+                Map.center_object(boundary,17);
+                srtm=ee.Image("USGS/SRTMGL1_003")
+                elev = srtm.select('elevation');
+                # Get slope
+                slope = ee.Terrain.slope(elev);
+
+                # Clip Srtm DEM by geometry
+                DEM_slope= slope.clip(boundary);
+                slope_palette1 = ['0C7600','4CE500','B2FF18','FFFF00','FFAE00','ff6d66','FF0000']
+                Map.addLayer(DEM_slope,{'palette':slope_palette1},"Digital Elevation Model")
+                
+                vis_params = {
+                    'min': 0,
+                    'max': 7000,
+                    'palette':['0C7600','4CE500','B2FF18','FFFF00','FFAE00','ff6d66','FF0000'],
+                }
+                colors = vis_params['palette']
+                vmin = vis_params['min']
+                vmax = vis_params['max']
+                Map.add_colorbar(vis_params,label='Digital Elevation Model(DEM)')
+                legend_dict = {
+                       'Lowland (Up to 200 M)': '0C7600',
+                       'Mountainous Areas: (Up to 500 M)': '4CE500',
+                       'High Plateaus:(Around 2,000 M)': 'B2FF18',
+                       'Extreme Elevations(Over 5000 M)': 'FF0000',}
+                Map.add_legend(title="DEM Legend 🌏", legend_dict=legend_dict)
+                
+        except Exception as e:
+            # Handle the exception. You can customize this part based on how you want to display the error.
+            error_message = f"An error occurred:Please review the previous steps!!!"
+            context['error_message'] = error_message
+        else:
+                success_message = f"DEM Runned Successfully for Your Region"
+                context['success_message'] = success_message
+        Map.add_child(folium.LayerControl())
+        figure.render()
+       
+        context['DEM'] = figure
+        context['form'] = DateForm()
+        return context
+    def post(self, request, pk=''):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data['start_date']
+            end = form.cleaned_data['end_date']
+            global start_date
+            start_date = datetime.strftime(start, "%Y-%m-%d")
+            global end_date
+            end_date = datetime.strftime(end, "%Y-%m-%d")
+            print(start_date)
+            print(end_date)
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+    def get(self, request, pk=''):
+        form = DateForm()
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+    
+#2). Rainfall
+class Rainfall(TemplateView):
+    template_name = 'index.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        Map.set_center(-7.799, 53.484, 7)
+ #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+      #Add GPS (Global Postion System)
+        plugins.LocateControl().add_to(Map)
+ #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+
+        try:
+                Map.center_object(boundary,17);
+                srtm=ee.Image("USGS/SRTMGL1_003")
+                elev = srtm.select('elevation');
+                # Get slope
+                slope = ee.Terrain.slope(elev);
+
+                # Clip Srtm DEM by geometry
+                DEM_slope= slope.clip(boundary);
+                slope_palette1 = ['0C7600','4CE500','B2FF18','FFFF00','FFAE00','ff6d66','FF0000']
+                Map.addLayer(DEM_slope,{'palette':slope_palette1},"Digital Elevation Model")
+                
+                vis_params = {
+                    'min': 0,
+                    'max': 7000,
+                    'palette':['0C7600','4CE500','B2FF18','FFFF00','FFAE00','ff6d66','FF0000'],
+                }
+                colors = vis_params['palette']
+                vmin = vis_params['min']
+                vmax = vis_params['max']
+                Map.add_colorbar(vis_params,label='Digital Elevation Model(DEM)')
+                legend_dict = {
+                       'Lowland (Up to 200 M)': '0C7600',
+                       'Mountainous Areas: (Up to 500 M)': '4CE500',
+                       'High Plateaus:(Around 2,000 M)': 'B2FF18',
+                       'Extreme Elevations(Over 5000 M)': 'FF0000',}
+                Map.add_legend(title="DEM Legend 🌏", legend_dict=legend_dict)
+                
+        except Exception as e:
+            # Handle the exception. You can customize this part based on how you want to display the error.
+            error_message = f"An error occurred:Please review the previous steps!!!"
+            context['error_message'] = error_message
+        else:
+                success_message = f"Rainfall Runned Successfully for Your Region"
+                context['success_message'] = success_message
+        Map.add_child(folium.LayerControl())
+        figure.render()
+       
+        context['Rainfall'] = figure
         context['form'] = DateForm()
         return context
     def post(self, request, pk=''):

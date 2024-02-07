@@ -31,8 +31,5 @@ urlpatterns = [
     path('soil',views.soil.as_view(),name='soil'),
     path('NDVI',views.NDVI.as_view(),name='NDVI'),
     path('EVI',views.EVI.as_view(),name='EVI'),
-
-    
-
-    
+    path('DEM',views.DEM.as_view(),name='DEM'),  
 ]
