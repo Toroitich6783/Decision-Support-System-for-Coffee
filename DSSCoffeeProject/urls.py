@@ -31,5 +31,13 @@ urlpatterns = [
     path('soil',views.soil.as_view(),name='soil'),
     path('NDVI',views.NDVI.as_view(),name='NDVI'),
     path('EVI',views.EVI.as_view(),name='EVI'),
-    path('DEM',views.DEM.as_view(),name='DEM'),  
+    path('DEM',views.DEM.as_view(),name='DEM'),
+    path('LULC',views.LULC.as_view(),name='LULC'), 
+    path('Rainfall',views.Rainfall.as_view(),name='Rainfall'),
+    path('Temperature',views.Temperature.as_view(),name='Temperature'), 
+
+     
+
+ 
+     
 ]

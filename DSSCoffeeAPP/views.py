@@ -586,6 +586,138 @@ class Sentinel_Imagery(TemplateView):
         context['form'] = form
         return render(request, self.template_name, context)
 
+
+#Normalized Difference Vegetation Index: NDVI.
+class LULC(TemplateView):
+    template_name = 'index.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+        # GPS
+        plugins.LocateControl().add_to(Map)
+        #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+        # try:
+        Map.center_object(boundary,9);
+        
+        global season
+        season = ee.Filter.date(start_date,end_date);#Filter image based on the time frame(start_date and end_date)
+#-------------SENTINEL_2A DATA----------------------#  
+        Fused_images = sentinel_2A#Creation of composite image of sentinel 1 and sentinel 2A
+        fused_vis = {
+        'min':0,
+        'max'  : 2500,
+        'bands' : ['B2', 'B3','B4']#Band selection.
+        }
+        
+        feature_collection = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/KipkelionWtraining_points")
+        training = ee.FeatureCollection(feature_collection)
+        #Create a buffer:
+        buffered_data = training.map(lambda f: f.buffer(5))
+        # Map.addLayer(training1,{},"buffer")
+        label = 'cropland'#Unique property(cropland) with different unique values..
+        bands=["B4","B3","B2"]
+        global Input
+        Input=Fused_images.select(bands)
+        trainImage=Input.sampleRegions(**{
+        'collection':training,
+        'properties':[label],
+        'scale':10
+        })
+
+        trainingData=trainImage.randomColumn()
+
+        trainSet=trainingData.filter(ee.Filter.lessThan('random',0.75))
+        testdata=trainingData.filter(ee.Filter.greaterThanOrEquals('random',0.75))
+
+
+        #visualization parameters applied on the Random forest classifier
+
+        init_params = {"numberOfTrees":10, # the number of individual decision tree models
+        "variablesPerSplit":None,  # the number of features to use per split
+        "minLeafPopulation":1, # smallest sample size possible per leaf
+        "bagFraction":0.5, # fraction of data to include for each individual tree model
+        "maxNodes":None, # max number of leafs/nodes per tree
+        "seed":0}  # random seed for "random" choices like sampling. Setting this allows others to reproduce your exact results even with stocastic parameters
+        global classifier
+
+        classifier = ee.Classifier.smileRandomForest(**init_params).train(trainImage, label, bands)
+        # Classify the image.
+
+        #Application of the random forest classifier for the purpose of image classification.
+        global classified
+        classified=Input.classify(classifier)
+        palette = [
+ 'green',#//Forest(0)
+  'yellow', #//Bareland(1)
+  'brown',#//Coffee(2)
+  'black',#//Settlements(3)
+  'gray', #Grassland(4)
+        ];
+        Map.addLayer(classified,
+        {'min': 0, 'max': 4, 'palette': palette},
+        'classification')
+
+
+        legend_dict = {
+        'Forest': 'green',
+        'Bareland':'yellow',
+        'Coffee':'brown',
+        'Settlement':'black',
+        'Grassland':'gray',
+   
+
+        }
+        Map.add_legend(title="Classification💥", legend_dict=legend_dict)
+                
+        Total_studyArea = boundary.geometry().area()
+        Total_AreaSqKm = ee.Number(Total_studyArea).round()
+        print('Estimated Total areas', Total_AreaSqKm.getInfo())
+        # except Exception as e:
+        #     # Handle the exception. You can customize this part based on how you want to display the error.
+        #     error_message = f"An error occurred:Please review the previous steps!!!!"
+        #     context['error_message'] = error_message
+        # else:
+        #         sucess_message = f"Succefully loaded LULC for your ROI"
+        #         context['sucess_message'] = sucess_message
+            
+        
+        Map.add_child(folium.LayerControl())
+        figure.render()
+        areaestimate1=Total_AreaSqKm.getInfo()
+        
+        context['areaestimate1'] = areaestimate1
+        context['LULC'] = figure
+        return context
+    def get(self, request, pk=''):
+        form = DateForm()
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+    
+    def post(self, request, pk=''):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data['start_date']
+            end = form.cleaned_data['end_date']
+            global start_date
+            start_date = datetime.strftime(start, "%Y-%m-%d")
+            global end_date
+            end_date = datetime.strftime(end, "%Y-%m-%d")
+            print(start_date)
+            print(end_date)
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+            
+
+
 #Normalized Difference Vegetation Index: NDVI.
 class NDVI(TemplateView):
     template_name = 'index.html'
@@ -630,10 +762,10 @@ class NDVI(TemplateView):
             }
             Map.add_colorbar(vis_params,label='Crop Health Analysis')
             legend_dict = {
-                    'Non-crops(0 to 0.18)': 'FF0000',
-                    'Unhealthly crops(0.18 to 0.41)': 'A52A2A',
-                    'Moderately healthy crops(0.41 to 0.0.69)': 'FFFF00',
-                    'Very healthy crops(0.69 to 1.0)': '008000',}
+                    'Non Vegatation(-1 to 0):': 'FF0000',
+                    'Low Vegetation (0 to 0.2):': 'A52A2A',
+                    'Moderate Vegetation (0.2 to 0.5):': 'FFFF00',
+                    'High Vegetation (0.5 to 1):': '008000',}
             Map.add_legend(title="NDVI Legend", legend_dict=legend_dict)  
                     
             Total_studyArea = boundary.geometry().area()
@@ -788,10 +920,8 @@ class soil(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
         # try:  
-            
-        # Map.centerObject(boundary,17)
-        
-        GeologicalMap=ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Ireland_SoilData")
+                    
+        GeologicalMap=ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Kipkelion_West_Soils")
         Map.centerObject(GeologicalMap,12)
         states = GeologicalMap
 
@@ -806,8 +936,7 @@ class soil(TemplateView):
         }
 
         palette = [       
-                '0000FF', '008000', 'FF0000', 'FFA500', '800080',
-                            '00FFFF', 'FFC0CB', 'FFFF00', 'A52A2A'
+                '0000FF', '008000', 'FF0000'
                 ]
         # Map
         # Convert the Earth Engine FeatureCollection to GeoJSON
@@ -829,17 +958,12 @@ class soil(TemplateView):
         ).add_to(Map)
         #Adding legend:
         legend_dict = {
-            'Sand Loam': 'blue',
-            'Loam': 'green',
-            'Clay Loam': 'red',
-            'Loam': 'orange',
-            'Water': 'purple',
-            'Loam': 'orange',
-            'Loam': 'yellow',
-            'Sandy Loam': 'purple',
-            'Laom': 'cyan',
+            'Loam': '0000FF',
+            'Sandy Clay Loam': '008000',
+            'Clay Loam': 'FF0000',
+        
             }
-        Map.add_legend(title="Soil Type ♠", legend_dict=legend_dict)
+        Map.add_legend(title="Soil Type🦖", legend_dict=legend_dict)
                 
         # except Exception as e:
         #     # Handle the exception. You can customize this part based on how you want to display the error.
@@ -971,32 +1095,41 @@ class Rainfall(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
         try:
-                Map.center_object(boundary,17);
-                srtm=ee.Image("USGS/SRTMGL1_003")
-                elev = srtm.select('elevation');
-                # Get slope
-                slope = ee.Terrain.slope(elev);
+                Map.centerObject(boundary,12)
+                imgcol = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
 
-                # Clip Srtm DEM by geometry
-                DEM_slope= slope.clip(boundary);
-                slope_palette1 = ['0C7600','4CE500','B2FF18','FFFF00','FFAE00','ff6d66','FF0000']
-                Map.addLayer(DEM_slope,{'palette':slope_palette1},"Digital Elevation Model")
+                #The shapefile is available here:
+                #
+
+                #Time range
+                img_col = imgcol.filter(ee.Filter.date ('2000-01-01', '2005-01-30'))
+
+
+                image = img_col.mean().clip(boundary)
+                precipitationVis = {
+                'min': 1.0,
+                'max': 17.0,
+                'palette': ['001137', '0aab1e', 'e7eb05', 'ff4a2d', 'e90000'],
+                }
+                Map.addLayer(image,precipitationVis,"Rainfall")
+
                 
                 vis_params = {
                     'min': 0,
-                    'max': 7000,
-                    'palette':['0C7600','4CE500','B2FF18','FFFF00','FFAE00','ff6d66','FF0000'],
+                    'max': 1444.34,
+                    'palette':['001137','0aab1e','e7eb05','ff4a2d','e90000'],
                 }
                 colors = vis_params['palette']
                 vmin = vis_params['min']
                 vmax = vis_params['max']
-                Map.add_colorbar(vis_params,label='Digital Elevation Model(DEM)')
+                Map.add_colorbar(vis_params,label='Precipitation(mm/d)')
                 legend_dict = {
-                       'Lowland (Up to 200 M)': '0C7600',
-                       'Mountainous Areas: (Up to 500 M)': '4CE500',
-                       'High Plateaus:(Around 2,000 M)': 'B2FF18',
-                       'Extreme Elevations(Over 5000 M)': 'FF0000',}
-                Map.add_legend(title="DEM Legend 🌏", legend_dict=legend_dict)
+                       'Light Precipitation': '001137',
+                       'Moderate Precipitation': '0aab1e',
+                       'Heavy Precipitation': 'e7eb05',
+                       'Very Heavy Precipitation': 'ff4a2d',
+                       'Extreme Precipitation': 'e90000',}
+                Map.add_legend(title="Precipitation Legend 🌧", legend_dict=legend_dict)
                 
         except Exception as e:
             # Handle the exception. You can customize this part based on how you want to display the error.
@@ -1009,6 +1142,109 @@ class Rainfall(TemplateView):
         figure.render()
        
         context['Rainfall'] = figure
+        context['form'] = DateForm()
+        return context
+    def post(self, request, pk=''):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data['start_date']
+            end = form.cleaned_data['end_date']
+            global start_date
+            start_date = datetime.strftime(start, "%Y-%m-%d")
+            global end_date
+            end_date = datetime.strftime(end, "%Y-%m-%d")
+            print(start_date)
+            print(end_date)
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+    def get(self, request, pk=''):
+        form = DateForm()
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+   
+#3). Temperature
+class Temperature(TemplateView):
+    template_name = 'index.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        Map.set_center(-7.799, 53.484, 7)
+ #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+      #Add GPS (Global Postion System)
+        plugins.LocateControl().add_to(Map)
+ #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+
+        try:
+                Map.centerObject(boundary,12)
+            # Load a Landsat 8 image
+                landsat8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_TOA') \
+                    .filterBounds(boundary) \
+                    .filterDate('2020-01-01', '2020-12-31') \
+                    .sort('CLOUD_COVER') \
+                    .first()\
+                    .clip(boundary)
+
+                # Function to calculate LST
+                def calculateLST(image):
+                    # Convert thermal band (Kelvin) to Celsius
+                    lstCelsius = image.select(['B10']).subtract(273.15)
+
+                    # Add thermal band to the image
+                    return image.addBands(lstCelsius.rename('LST'))
+
+                # Apply the function to the Landsat 8 image
+                lstImage = calculateLST(landsat8)
+
+                # Display the result on the map
+                Map.centerObject(boundary, 8)
+                Map.addLayer(lstImage.select('LST'), {
+                    'min': 0,
+                    'max': 40,
+                    'palette': ['blue', 'purple', 'cyan', 'green', 'yellow', 'red']
+                }, 
+                             'LST')
+
+
+
+                
+                vis_params = {
+                    'min': 0,
+                    'max': 40,
+                    'palette':['blue', 'purple', 'cyan', 'green', 'yellow', 'red'],
+                }
+                colors = vis_params['palette']
+                vmin = vis_params['min']
+                vmax = vis_params['max']
+                Map.add_colorbar(vis_params,label='Temperature(°C)')
+                legend_dict = {
+                       'Freezing Range: Below 0°C': 'blue',
+                       'Cold Range: 0°C': 'purple',
+                       'Cool Range: 10°C': 'cyan',
+                       'Moderate Range: 20°C': 'green',
+                       'Warm Range: 25°C': 'yellow',
+                       'Hot Range:Above 30°C': 'red',
+                        }
+                Map.add_legend(title="Temperature(°C) 🥵", legend_dict=legend_dict)
+                
+        except Exception as e:
+            # Handle the exception. You can customize this part based on how you want to display the error.
+            error_message = f"An error occurred:Please review the previous steps!!!"
+            context['error_message'] = error_message
+        else:
+                success_message = f"Temperature Runned Successfully for Your Region"
+                context['success_message'] = success_message
+        Map.add_child(folium.LayerControl())
+        figure.render()
+       
+        context['Temperature'] = figure
         context['form'] = DateForm()
         return context
     def post(self, request, pk=''):
