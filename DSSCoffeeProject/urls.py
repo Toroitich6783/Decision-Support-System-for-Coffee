@@ -35,6 +35,9 @@ urlpatterns = [
     path('LULC',views.LULC.as_view(),name='LULC'), 
     path('Rainfall',views.Rainfall.as_view(),name='Rainfall'),
     path('Temperature',views.Temperature.as_view(),name='Temperature'), 
+    path('DSS_Model',views.DSS_Model.as_view(),name='DSS_Model'), 
+
+    
 
      
 

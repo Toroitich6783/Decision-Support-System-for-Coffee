@@ -1267,3 +1267,107 @@ class Temperature(TemplateView):
         context = self.get_context_data()
         context['form'] = form
         return render(request, self.template_name, context)
+
+
+#DSS_Model
+class DSS_Model(TemplateView):
+    template_name = 'index.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        figure = folium.Figure()
+        Map = geemap.Map()
+        Map.add_to(figure)
+        Map.set_center(-7.799, 53.484, 7)
+ #mouse position
+        fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
+        plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
+      #Add GPS (Global Postion System)
+        plugins.LocateControl().add_to(Map)
+ #Add measure tool 
+        plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
+
+        try:
+                Map.centerObject(boundary,12)
+            # Load a Landsat 8 image
+                landsat8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_TOA') \
+                    .filterBounds(boundary) \
+                    .filterDate('2020-01-01', '2020-12-31') \
+                    .sort('CLOUD_COVER') \
+                    .first()\
+                    .clip(boundary)
+
+                # Function to calculate LST
+                def calculateLST(image):
+                    # Convert thermal band (Kelvin) to Celsius
+                    lstCelsius = image.select(['B10']).subtract(273.15)
+
+                    # Add thermal band to the image
+                    return image.addBands(lstCelsius.rename('LST'))
+
+                # Apply the function to the Landsat 8 image
+                lstImage = calculateLST(landsat8)
+
+                # Display the result on the map
+                Map.centerObject(boundary, 8)
+                Map.addLayer(lstImage.select('LST'), {
+                    'min': 0,
+                    'max': 40,
+                    'palette': ['blue', 'purple', 'cyan', 'green', 'yellow', 'red']
+                }, 
+                             'LST')
+
+
+
+                
+                vis_params = {
+                    'min': 0,
+                    'max': 40,
+                    'palette':['blue', 'purple', 'cyan', 'green', 'yellow', 'red'],
+                }
+                colors = vis_params['palette']
+                vmin = vis_params['min']
+                vmax = vis_params['max']
+                Map.add_colorbar(vis_params,label='Temperature(°C)')
+                legend_dict = {
+                       'Freezing Range: Below 0°C': 'blue',
+                       'Cold Range: 0°C': 'purple',
+                       'Cool Range: 10°C': 'cyan',
+                       'Moderate Range: 20°C': 'green',
+                       'Warm Range: 25°C': 'yellow',
+                       'Hot Range:Above 30°C': 'red',
+                        }
+                Map.add_legend(title="Temperature(°C) 🥵", legend_dict=legend_dict)
+                
+        except Exception as e:
+            # Handle the exception. You can customize this part based on how you want to display the error.
+            error_message = f"An error occurred:Please review the previous steps!!!"
+            context['error_message'] = error_message
+        else:
+                success_message = f"DSS Runned Successfully for Your Region"
+                context['success_message'] = success_message
+        Map.add_child(folium.LayerControl())
+        figure.render()
+       
+        context['DSS_Model'] = figure
+        context['form'] = DateForm()
+        return context
+    def post(self, request, pk=''):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data['start_date']
+            end = form.cleaned_data['end_date']
+            global start_date
+            start_date = datetime.strftime(start, "%Y-%m-%d")
+            global end_date
+            end_date = datetime.strftime(end, "%Y-%m-%d")
+            print(start_date)
+            print(end_date)
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+    def get(self, request, pk=''):
+        form = DateForm()
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
