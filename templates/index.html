@@ -643,7 +643,7 @@
   <!--Variable/spectral analysis start-->
   <label class="Variables" style="color: white; width: 200px;"  for="spectral_dropdown">DSS Overlay:</label>
   <br>
-  <button title="Click me for an example tooltip"  class="runButton"  onclick="showspinner22()">Run DSS Analysis</button>
+  <button title="Click to run DSS Analysis"  class="runButton"  onclick="showspinner22()">Run DSS Analysis</button>
 
     <script>
         function showspinner22() {
@@ -656,7 +656,7 @@
                 setTimeout(function () {
                     container22.style.display = "none";
                     // Redirect to the desired URL
-                    window.location.href = "{% url 'map' %}";
+                    window.location.href = "{% url 'DSS_Model' %}";
                 }, 3000); // 3000 milliseconds (3 seconds) delay for demonstration purposes
             }
         }
@@ -678,7 +678,7 @@
   <!--Resetting Everything start-->
   <label class="Variables" style="color: white; width: 200px;"  for="spectral_dropdown">Reset:</label>
   <br>
-  <button title="Click me for an example tooltip"  class="runButton"  onclick="showspinner22()">Reset</button>
+  <button title="Restart DSS Model"  class="runButton"  onclick="showspinner22()">Reset</button>
 
     <script>
         function showspinner22() {
@@ -691,7 +691,7 @@
                 setTimeout(function () {
                     container22.style.display = "none";
                     // Redirect to the desired URL
-                    window.location.href = "{% url 'map' %}";
+                    window.location.href = "{% url 'DSS_Model' %}";
                 }, 3000); // 3000 milliseconds (3 seconds) delay for demonstration purposes
             }
         }

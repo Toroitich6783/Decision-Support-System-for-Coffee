@@ -84,6 +84,50 @@ class map(TemplateView):
         .median()\
         .select('B1','B2', 'B3', 'B4', 'B5', 'B6', 'B7','B8', 'B10', 'B11')\
         .clip(boundary)
+        
+        
+        # Overall Parameter combination code Start
+        global NDVI
+        NDVI = sentinel_2A.normalizedDifference(['B8', 'B4'])#normalized difference is computed as (first − second) / (first + second).
+        ndvivis_parametres = {'min':0, 'max':1, 'palette': ['red','brown','yellow', 'green'] }#NDVI visualization parameters
+        # Map.addLayer(NDVI, ndvivis_parametres, 'NDVI')#Add Normalized Difference Vegetation Index to the layers
+        global EVI
+        EVI = sentinel_2A.expression(
+        '2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))', {
+                'NIR' : sentinel_2A.select('B8').divide(10000),
+                'RED' : sentinel_2A.select('B4').divide(10000),
+                'BLUE': sentinel_2A.select('B2').divide(10000)})
+        EVI_vispar={'min':-1, 'max':1, 'palette': ['yellow', 'brown','green']}#EVI visualization parameters
+        # Map.addLayer(EVI,EVI_vispar,"EVI(Enhanced Vegetation Index)")#Add Enhanced Vegetation Index to the layers
+
+        # Load a Landsat 8 image
+        landsat8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_TOA') \
+            .filterBounds(boundary) \
+            .filterDate('2020-01-01', '2020-12-31') \
+            .sort('CLOUD_COVER') \
+            .first()\
+            .clip(boundary)
+
+        # Function to calculate LST
+        def calculateLST(image):
+            # Convert thermal band (Kelvin) to Celsius
+            lstCelsius = image.select(['B10']).subtract(273.15)
+
+            # Add thermal band to the image
+            return image.addBands(lstCelsius.rename('LST'))
+
+        # Apply the function to the Landsat 8 image
+        global lstImage
+        lstImage = calculateLST(landsat8).select('LST')
+
+        dataset = ee.ImageCollection('UCSB-CHG/CHIRPS/DAILY') \
+        .filter(ee.Filter.date('2021-01-01', '2021-12-01'))\
+        .mean()\
+        .clip(boundary)
+        global precipitation
+        precipitation = dataset.select('precipitation')
+        # Overall Parameter combination code End
+
 
         ###############################################################################
         #############################End Test inputs#######################################
@@ -840,7 +884,7 @@ class EVI(TemplateView):
                 .clip(boundary)  
                 sentinel_2Avispar={"min":0, "max":4000,"bands": ['B4','B3','B2']}#Visualization parameters used.
                 Map.addLayer(sentinel_2A,sentinel_2Avispar,"Sentinel Imagery")
-        
+                global EVI
                 EVI = sentinel_2A.expression(
                 '2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))', {
                         'NIR' : sentinel_2A.select('B8').divide(10000),
@@ -1018,8 +1062,10 @@ class DEM(TemplateView):
         try:
                 Map.center_object(boundary,17);
                 srtm=ee.Image("USGS/SRTMGL1_003")
+                global elev
                 elev = srtm.select('elevation');
                 # Get slope
+                
                 slope = ee.Terrain.slope(elev);
 
                 # Clip Srtm DEM by geometry
@@ -1201,6 +1247,7 @@ class Temperature(TemplateView):
                     return image.addBands(lstCelsius.rename('LST'))
 
                 # Apply the function to the Landsat 8 image
+                global lstImage
                 lstImage = calculateLST(landsat8)
 
                 # Display the result on the map
@@ -1286,65 +1333,56 @@ class DSS_Model(TemplateView):
  #Add measure tool 
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
-        try:
-                Map.centerObject(boundary,12)
-            # Load a Landsat 8 image
-                landsat8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_TOA') \
-                    .filterBounds(boundary) \
-                    .filterDate('2020-01-01', '2020-12-31') \
-                    .sort('CLOUD_COVER') \
-                    .first()\
-                    .clip(boundary)
+        # try:
+# NDVI_DSS Model
 
-                # Function to calculate LST
-                def calculateLST(image):
-                    # Convert thermal band (Kelvin) to Celsius
-                    lstCelsius = image.select(['B10']).subtract(273.15)
+        NDVI_coffee = NDVI.gt(0.2).And(NDVI.lte(0.4))
+        ndvivis_parametres = {'min':0, 'max':1, 'palette': ['red','brown','yellow', 'green'] }#NDVI visualization parameters
+        Map.addLayer(NDVI_coffee, ndvivis_parametres, 'NDVI_coffee')#Add Normalized Difference Vegetation Index to the layers
 
-                    # Add thermal band to the image
-                    return image.addBands(lstCelsius.rename('LST'))
+        # EVI_DSS Model
 
-                # Apply the function to the Landsat 8 image
-                lstImage = calculateLST(landsat8)
+        EVI_coffee = EVI.gt(0.2).And(EVI.lte(0.4))
+        Map.addLayer(EVI_coffee, ndvivis_parametres, 'EVI_coffee')
+        Map.centerObject(boundary,12)
 
-                # Display the result on the map
-                Map.centerObject(boundary, 8)
-                Map.addLayer(lstImage.select('LST'), {
-                    'min': 0,
-                    'max': 40,
-                    'palette': ['blue', 'purple', 'cyan', 'green', 'yellow', 'red']
-                }, 
-                             'LST')
+        # Temperature_DSS Model
+        Temp_coffee = lstImage.gt(2).And(lstImage.lte(24))
+        Map.addLayer(Temp_coffee.select('LST'), ndvivis_parametres, 'Temp_coffee')
+        Map.centerObject(boundary,12)
+
+        mod1join = NDVI_coffee.addBands(EVI_coffee).addBands(Temp_coffee)
+        Map.addLayer(mod1join,{}, "Combined")
 
 
 
-                
-                vis_params = {
-                    'min': 0,
-                    'max': 40,
-                    'palette':['blue', 'purple', 'cyan', 'green', 'yellow', 'red'],
+        
+        vis_params = {
+            'min': 0,
+            'max': 40,
+            'palette':['blue', 'purple', 'cyan', 'green', 'yellow', 'red'],
+        }
+        colors = vis_params['palette']
+        vmin = vis_params['min']
+        vmax = vis_params['max']
+        Map.add_colorbar(vis_params,label='Temperature(°C)')
+        legend_dict = {
+                'Freezing Range: Below 0°C': 'blue',
+                'Cold Range: 0°C': 'purple',
+                'Cool Range: 10°C': 'cyan',
+                'Moderate Range: 20°C': 'green',
+                'Warm Range: 25°C': 'yellow',
+                'Hot Range:Above 30°C': 'red',
                 }
-                colors = vis_params['palette']
-                vmin = vis_params['min']
-                vmax = vis_params['max']
-                Map.add_colorbar(vis_params,label='Temperature(°C)')
-                legend_dict = {
-                       'Freezing Range: Below 0°C': 'blue',
-                       'Cold Range: 0°C': 'purple',
-                       'Cool Range: 10°C': 'cyan',
-                       'Moderate Range: 20°C': 'green',
-                       'Warm Range: 25°C': 'yellow',
-                       'Hot Range:Above 30°C': 'red',
-                        }
-                Map.add_legend(title="Temperature(°C) 🥵", legend_dict=legend_dict)
+        Map.add_legend(title="DSS For Coffee ✨", legend_dict=legend_dict)
                 
-        except Exception as e:
-            # Handle the exception. You can customize this part based on how you want to display the error.
-            error_message = f"An error occurred:Please review the previous steps!!!"
-            context['error_message'] = error_message
-        else:
-                success_message = f"DSS Runned Successfully for Your Region"
-                context['success_message'] = success_message
+        # except Exception as e:
+        #     # Handle the exception. You can customize this part based on how you want to display the error.
+        #     error_message = f"An error occurred:Please review the previous steps!!!"
+        #     context['error_message'] = error_message
+        # else:
+        #         success_message = f"DSS Runned Successfully for Your Region"
+        #         context['success_message'] = success_message
         Map.add_child(folium.LayerControl())
         figure.render()
        
