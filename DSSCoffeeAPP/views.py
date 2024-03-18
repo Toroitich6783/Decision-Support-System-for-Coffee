@@ -26,7 +26,9 @@ class map(TemplateView):
     template_name = 'index.html'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        figure = folium.Figure()   
+        figure = folium.Figure() 
+        # ee.Authenticate()
+        # ee.Initialize()
         Map = geemap.Map()
         Map.add_to(figure)
         Map.set_center(35.4066, -0.1566, 12)
@@ -126,6 +128,17 @@ class map(TemplateView):
         .clip(boundary)
         global precipitation
         precipitation = dataset.select('precipitation')
+        
+        srtm=ee.Image("USGS/SRTMGL1_003")
+        global elev
+        elev = srtm.select('elevation');
+        # Get slope
+
+        slope = ee.Terrain.slope(elev);
+
+        # Clip Srtm DEM by geometry
+        global DEM_slope
+        DEM_slope= slope.clip(boundary);
         # Overall Parameter combination code End
 
 
@@ -1324,7 +1337,6 @@ class DSS_Model(TemplateView):
         figure = folium.Figure()
         Map = geemap.Map()
         Map.add_to(figure)
-        Map.set_center(-7.799, 53.484, 7)
  #mouse position
         fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
         plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
@@ -1334,29 +1346,38 @@ class DSS_Model(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
         # try:
-# NDVI_DSS Model
-
-        NDVI_coffee = NDVI.gt(0.2).And(NDVI.lte(0.4))
-        ndvivis_parametres = {'min':0, 'max':1, 'palette': ['red','brown','yellow', 'green'] }#NDVI visualization parameters
-        Map.addLayer(NDVI_coffee, ndvivis_parametres, 'NDVI_coffee')#Add Normalized Difference Vegetation Index to the layers
+        # NDVI_DSS Model
+        NDVI_coffee = NDVI.gt(0.69).And(NDVI.lte(1.0))
+        ndvivis_parametres = {'palette': ['red','brown','yellow', 'green'] }#NDVI visualization parameters
+        # Map.addLayer(NDVI_coffee, ndvivis_parametres, 'NDVI_coffee')#Add Normalized Difference Vegetation Index to the layers
 
         # EVI_DSS Model
-
-        EVI_coffee = EVI.gt(0.2).And(EVI.lte(0.4))
-        Map.addLayer(EVI_coffee, ndvivis_parametres, 'EVI_coffee')
-        Map.centerObject(boundary,12)
+        EVI_coffee = EVI.gt(0.7).And(EVI.lte(1))
+        # Map.addLayer(EVI_coffee, ndvivis_parametres, 'EVI_coffee')
 
         # Temperature_DSS Model
         Temp_coffee = lstImage.gt(2).And(lstImage.lte(24))
-        Map.addLayer(Temp_coffee.select('LST'), ndvivis_parametres, 'Temp_coffee')
+        # Map.addLayer(Temp_coffee.select('LST'), ndvivis_parametres, 'Temp_coffee')
+
+        # precipitation
+        precipitation_coffee = precipitation.gt(2).And(precipitation.lte(2.1))
+        # Map.addLayer(precipitation_coffee, ndvivis_parametres, 'precipitation_coffee')
+
+        images_soils=ee.Image("projects/ee-mosongjnvscode/assets/Kipkelion_Soilsimg")
+        soilvis_parametres = {'min':0, 'max':2, 'palette': ['0000FF', '008000', 'FF0000'] }
+        # Map.addLayer(images_soils,soilvis_parametres,"Soils")
+
+
+        # DEM_slope
+        DEM_slope_coffee = DEM_slope.gt(20).And(DEM_slope.lte(60))
+        # Map.addLayer(DEM_slope_coffee, ndvivis_parametres, 'DEM_slope_coffee')
+
+
+        mod1join = precipitation_coffee.add(NDVI_coffee).add(EVI_coffee).add(Temp_coffee).add(DEM_slope_coffee)
+        ndvivis_parametres1 = {'palette': ['red','brown','yellow', 'green','blue','white','black','purple'] }# Overlay visualization parameters
+
+        Map.addLayer(mod1join,ndvivis_parametres1, "Overlaid")
         Map.centerObject(boundary,12)
-
-        mod1join = NDVI_coffee.addBands(EVI_coffee).addBands(Temp_coffee)
-        Map.addLayer(mod1join,{}, "Combined")
-
-
-
-        
         vis_params = {
             'min': 0,
             'max': 40,
@@ -1365,14 +1386,14 @@ class DSS_Model(TemplateView):
         colors = vis_params['palette']
         vmin = vis_params['min']
         vmax = vis_params['max']
-        Map.add_colorbar(vis_params,label='Temperature(°C)')
+        Map.add_colorbar(vis_params,label='DSS For Coffee ✨')
         legend_dict = {
-                'Freezing Range: Below 0°C': 'blue',
-                'Cold Range: 0°C': 'purple',
-                'Cool Range: 10°C': 'cyan',
-                'Moderate Range: 20°C': 'green',
-                'Warm Range: 25°C': 'yellow',
-                'Hot Range:Above 30°C': 'red',
+                'Optimal': 'blue',
+                'Highly Suitable': 'purple',
+                'Moderately Suitable': 'cyan',
+                'Marginally Suitable': 'green',
+                'Less Suitable': 'yellow',
+                'Not Suitable': 'red',
                 }
         Map.add_legend(title="DSS For Coffee ✨", legend_dict=legend_dict)
                 
