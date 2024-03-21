@@ -30,9 +30,7 @@ class map(TemplateView):
         # ee.Authenticate()
         # ee.Initialize()
         Map = geemap.Map()
-        Map.add_to(figure)
-        Map.set_center(35.4066, -0.1566, 12)
-        
+        Map.add_to(figure)        
         #mouse position
         fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
         plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
@@ -191,7 +189,7 @@ class MyField(TemplateView):
         try:
             global boundary
             boundary = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Kipkelion_west")
-            Map.center_object(boundary,9);
+            Map.center_object(boundary,11);
             Map.addLayer(boundary,{},"ROI")
             legend_dict = {
                         'ROI Boundary': '000000',
@@ -250,7 +248,7 @@ class MyField2(TemplateView):
         try:
             global boundary
             boundary = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Siaya")
-            Map.center_object(boundary,9);
+            Map.center_object(boundary,11);
             Map.addLayer(boundary,{},"ROI")
             legend_dict = {
                         'ROI Boundary': '000000',
@@ -310,7 +308,7 @@ class MyField3(TemplateView):
         try:
             global boundary
             boundary = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Homa_Bay")
-            Map.center_object(boundary,9);
+            Map.center_object(boundary,11);
             Map.addLayer(boundary,{},"ROI")
             legend_dict = {
                         'ROI Boundary': '000000',
@@ -368,7 +366,7 @@ class areameters(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
         
-        Map.center_object(boundary,9);
+        Map.center_object(boundary,11);
         Map.addLayer(boundary,{},"MyField")
           
         Total_studyArea = boundary.geometry().area()
@@ -422,7 +420,7 @@ class Acres(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
         
-        Map.center_object(boundary,9);
+        Map.center_object(boundary,11);
         Map.addLayer(boundary,{},"MyField") 
          
         Total_studyArea = boundary.geometry().area()
@@ -475,7 +473,7 @@ class Hectares(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
         
-        Map.center_object(boundary,9);
+        Map.center_object(boundary,11);
         Map.addLayer(boundary,{},"MyField")
           
         Total_studyArea = boundary.geometry().area()
@@ -528,7 +526,7 @@ class Kilometers(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
         
-        Map.center_object(boundary,9);
+        Map.center_object(boundary,11);
         Map.addLayer(boundary,{},"MyField")
           
         Total_studyArea = boundary.geometry().area()
@@ -580,12 +578,10 @@ class Sentinel_Imagery(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
         try:
             global boundary
-            Map.center_object(boundary,9);
-            Map.addLayer(boundary,{},"ROI")
+            Map.center_object(boundary,11);
 
             Map.addLayer(boundary,{},"Boundary")
         
-            Map.center_object(boundary,9);
             
             global season
             season = ee.Filter.date(start_date,end_date);#Filter image based on the time frame(start_date and end_date)
@@ -661,7 +657,7 @@ class LULC(TemplateView):
         #Add measure tool 
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
         # try:
-        Map.center_object(boundary,9);
+        Map.center_object(boundary,11);
         
         global season
         season = ee.Filter.date(start_date,end_date);#Filter image based on the time frame(start_date and end_date)
@@ -792,7 +788,7 @@ class NDVI(TemplateView):
         #Add measure tool 
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
         try:
-            Map.center_object(boundary,9);
+            Map.center_object(boundary,11);
             
             global season
             season = ee.Filter.date(start_date,end_date);#Filter image based on the time frame(start_date and end_date)
@@ -883,7 +879,7 @@ class EVI(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
         try: 
-                Map.center_object(boundary,9);
+                Map.center_object(boundary,11);
             
                 global season
                 season = ee.Filter.date(start_date,end_date);#Filter image based on the time frame(start_date and end_date)
@@ -979,7 +975,7 @@ class soil(TemplateView):
         # try:  
                     
         GeologicalMap=ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Kipkelion_West_Soils")
-        Map.centerObject(GeologicalMap,12)
+        Map.centerObject(GeologicalMap,11)
         states = GeologicalMap
 
         vis_params = {
@@ -1063,7 +1059,6 @@ class DEM(TemplateView):
         figure = folium.Figure()
         Map = geemap.Map()
         Map.add_to(figure)
-        Map.set_center(-7.799, 53.484, 7)
  #mouse position
         fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
         plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
@@ -1073,7 +1068,7 @@ class DEM(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
         try:
-                Map.center_object(boundary,17);
+                Map.center_object(boundary,11);
                 srtm=ee.Image("USGS/SRTMGL1_003")
                 global elev
                 elev = srtm.select('elevation');
@@ -1144,7 +1139,6 @@ class Rainfall(TemplateView):
         figure = folium.Figure()
         Map = geemap.Map()
         Map.add_to(figure)
-        Map.set_center(-7.799, 53.484, 7)
  #mouse position
         fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
         plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
@@ -1154,7 +1148,7 @@ class Rainfall(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
         try:
-                Map.centerObject(boundary,12)
+                Map.centerObject(boundary,11)
                 imgcol = ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
 
                 #The shapefile is available here:
@@ -1232,7 +1226,6 @@ class Temperature(TemplateView):
         figure = folium.Figure()
         Map = geemap.Map()
         Map.add_to(figure)
-        Map.set_center(-7.799, 53.484, 7)
  #mouse position
         fmtr = "function(num) {return L.Util.formatNum(num, 3) + ' º ';};"
         plugins.MousePosition(position='topright', separator=' | ', prefix="Mouse:",lat_formatter=fmtr, lng_formatter=fmtr).add_to(Map)
@@ -1242,7 +1235,7 @@ class Temperature(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
         try:
-                Map.centerObject(boundary,12)
+                Map.centerObject(boundary,11)
             # Load a Landsat 8 image
                 landsat8 = ee.ImageCollection('LANDSAT/LC08/C01/T1_TOA') \
                     .filterBounds(boundary) \
@@ -1261,10 +1254,10 @@ class Temperature(TemplateView):
 
                 # Apply the function to the Landsat 8 image
                 global lstImage
-                lstImage = calculateLST(landsat8)
+                lstImage = calculateLST(landsat8).select('LST')
 
                 # Display the result on the map
-                Map.centerObject(boundary, 8)
+                Map.centerObject(boundary, 11)
                 Map.addLayer(lstImage.select('LST'), {
                     'min': 0,
                     'max': 40,
@@ -1345,65 +1338,65 @@ class DSS_Model(TemplateView):
  #Add measure tool 
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
 
-        # try:
-        # NDVI_DSS Model
-        NDVI_coffee = NDVI.gt(0.69).And(NDVI.lte(1.0))
-        ndvivis_parametres = {'palette': ['red','brown','yellow', 'green'] }#NDVI visualization parameters
-        # Map.addLayer(NDVI_coffee, ndvivis_parametres, 'NDVI_coffee')#Add Normalized Difference Vegetation Index to the layers
+        try:
+            
+            NDVI_coffee = NDVI.gt(0.69).And(NDVI.lte(1.0))
+            ndvivis_parametres = {'palette': ['red','brown','yellow', 'green'] }#NDVI visualization parameters
+            # Map.addLayer(NDVI_coffee, ndvivis_parametres, 'NDVI_coffee')#Add Normalized Difference Vegetation Index to the layers
 
-        # EVI_DSS Model
-        EVI_coffee = EVI.gt(0.7).And(EVI.lte(1))
-        # Map.addLayer(EVI_coffee, ndvivis_parametres, 'EVI_coffee')
+            # EVI_DSS Model
+            EVI_coffee = EVI.gt(0.7).And(EVI.lte(1))
+            # Map.addLayer(EVI_coffee, ndvivis_parametres, 'EVI_coffee')
 
-        # Temperature_DSS Model
-        Temp_coffee = lstImage.gt(2).And(lstImage.lte(24))
-        # Map.addLayer(Temp_coffee.select('LST'), ndvivis_parametres, 'Temp_coffee')
+            # Temperature_DSS Model
+            Temp_coffee = lstImage.gt(2).And(lstImage.lte(24))
+            # Map.addLayer(Temp_coffee.select('LST'), ndvivis_parametres, 'Temp_coffee')
 
-        # precipitation
-        precipitation_coffee = precipitation.gt(2).And(precipitation.lte(2.1))
-        # Map.addLayer(precipitation_coffee, ndvivis_parametres, 'precipitation_coffee')
+            # precipitation
+            precipitation_coffee = precipitation.gt(2).And(precipitation.lte(2.1))
+            # Map.addLayer(precipitation_coffee, ndvivis_parametres, 'precipitation_coffee')
 
-        images_soils=ee.Image("projects/ee-mosongjnvscode/assets/Kipkelion_Soilsimg")
-        soilvis_parametres = {'min':0, 'max':2, 'palette': ['0000FF', '008000', 'FF0000'] }
-        # Map.addLayer(images_soils,soilvis_parametres,"Soils")
-
-
-        # DEM_slope
-        DEM_slope_coffee = DEM_slope.gt(20).And(DEM_slope.lte(60))
-        # Map.addLayer(DEM_slope_coffee, ndvivis_parametres, 'DEM_slope_coffee')
+            images_soils=ee.Image("projects/ee-mosongjnvscode/assets/Kipkelion_Soilsimg")
+            soilvis_parametres = {'min':0, 'max':2, 'palette': ['0000FF', '008000', 'FF0000'] }
+            # Map.addLayer(images_soils,soilvis_parametres,"Soils")
 
 
-        mod1join = precipitation_coffee.add(NDVI_coffee).add(EVI_coffee).add(Temp_coffee).add(DEM_slope_coffee)
-        ndvivis_parametres1 = {'palette': ['red','brown','yellow', 'green','blue','white','black','purple'] }# Overlay visualization parameters
+            # DEM_slope
+            DEM_slope_coffee = DEM_slope.gt(20).And(DEM_slope.lte(60))
+            # Map.addLayer(DEM_slope_coffee, ndvivis_parametres, 'DEM_slope_coffee')
 
-        Map.addLayer(mod1join,ndvivis_parametres1, "Overlaid")
-        Map.centerObject(boundary,12)
-        vis_params = {
-            'min': 0,
-            'max': 40,
-            'palette':['blue', 'purple', 'cyan', 'green', 'yellow', 'red'],
-        }
-        colors = vis_params['palette']
-        vmin = vis_params['min']
-        vmax = vis_params['max']
-        Map.add_colorbar(vis_params,label='DSS For Coffee ✨')
-        legend_dict = {
-                'Optimal': 'blue',
-                'Highly Suitable': 'purple',
-                'Moderately Suitable': 'cyan',
-                'Marginally Suitable': 'green',
-                'Less Suitable': 'yellow',
-                'Not Suitable': 'red',
-                }
-        Map.add_legend(title="DSS For Coffee ✨", legend_dict=legend_dict)
+
+            mod1join = precipitation_coffee.add(NDVI_coffee).add(EVI_coffee).add(Temp_coffee).add(DEM_slope_coffee)
+            ndvivis_parametres1 = {'palette': ['red','brown','yellow', 'green','blue','white','black','purple'] }# Overlay visualization parameters
+
+            Map.addLayer(mod1join,ndvivis_parametres1, "Overlaid")
+            Map.centerObject(boundary,11)
+            vis_params = {
+                'min': 0,
+                'max': 40,
+                'palette':['blue', 'purple', 'cyan', 'green', 'yellow', 'red'],
+            }
+            colors = vis_params['palette']
+            vmin = vis_params['min']
+            vmax = vis_params['max']
+            # Map.add_colorbar(vis_params,label='DSS For Coffee ✨')
+            legend_dict = {
+                    'Optimal': 'blue',
+                    'Highly Suitable': 'purple',
+                    'Moderately Suitable': 'cyan',
+                    'Marginally Suitable': 'green',
+                    'Less Suitable': 'yellow',
+                    'Not Suitable': 'red',
+                    }
+            Map.add_legend(title="DSS For Coffee ✨", legend_dict=legend_dict)
                 
-        # except Exception as e:
-        #     # Handle the exception. You can customize this part based on how you want to display the error.
-        #     error_message = f"An error occurred:Please review the previous steps!!!"
-        #     context['error_message'] = error_message
-        # else:
-        #         success_message = f"DSS Runned Successfully for Your Region"
-        #         context['success_message'] = success_message
+        except Exception as e:
+            # Handle the exception. You can customize this part based on how you want to display the error.
+            error_message = f"An error occurred:Please review the previous steps!!!"
+            context['error_message'] = error_message
+        else:
+                success_message = f"DSS Runned Successfully for Your Region"
+                context['success_message'] = success_message
         Map.add_child(folium.LayerControl())
         figure.render()
        
