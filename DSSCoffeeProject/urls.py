@@ -23,6 +23,7 @@ urlpatterns = [
     path('MyField',views.MyField.as_view(),name="MyField"),
     path('MyField2',views.MyField2.as_view(),name="MyField2"),
     path('MyField3',views.MyField3.as_view(),name="MyField3"),
+    path('MyField4',views.MyField4.as_view(),name="MyField4"),
     path('Acres',views.Acres.as_view(),name='Acres'),
     path('Hectares',views.Hectares.as_view(),name='Hectares'),
     path('Kilometers',views.Kilometers.as_view(),name='Kilometers'),

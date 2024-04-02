@@ -227,8 +227,8 @@
     {{ Rainfall.header.render|safe}}
     {{ Temperature.header.render|safe}}
     {{ DSS_Model.header.render|safe}}
+    {{ MyField4.header.render|safe}}
 
-    
    </script> 
 
 </head>
@@ -465,8 +465,7 @@
       {{Rainfall.html.render|safe}}
       {{Temperature.html.render|safe}}
       {{DSS_Model.html.render|safe}}
-
-      
+      {{MyField4.html.render|safe}}
     </div>
 
       <h3 id="successMessage" class="message success-message">{{ success_message }}</h3>
@@ -499,13 +498,13 @@
         <option value="{% url 'MyField' %}">Kipkelion west constituency</option>
         <option value="{% url 'MyField2' %}">Nyeri</option>
         <option value="">Kirinyaga</option>
-        <option value="">Murang'a</option>
+        <option value="{% url 'MyField3' %}">Murang'a</option>
         <option value="">Kiambu</option>
         <option value="">Embu</option>
         <option value="">Meru</option>
         <option value="">Bungoma</option>
         <option value="">Kisii</option>
-        <option value="">Kericho</option>
+        <option value="MyField4">Kericho</option>
 
       </select>
       <br>
@@ -736,7 +735,7 @@
     {{ Rainfall.script.render|safe}}
     {{ Temperature.script.render|safe}}
     {{ DSS_Model.script.render|safe}}
-
+    {{ MyField4.script.render|safe}}
 
     
     
