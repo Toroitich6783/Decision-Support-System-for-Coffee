@@ -170,7 +170,7 @@ class MyField2(TemplateView):
         plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles', primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(Map)
         try:
             global boundary
-            boundary = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/Nyeri")
+            boundary = ee.FeatureCollection("projects/ee-mosongjnvscode/assets/nyeri")
             Map.center_object(boundary,11);
             Map.addLayer(boundary,{},"ROI")
             legend_dict = {
